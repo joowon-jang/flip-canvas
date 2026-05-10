@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Flip Canvas",
+    "slug": "flip-canvas",
+    "version": "0.1.0",
+    "orientation": "default",
+    "scheme": "flipcanvas",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.joowon.flipcanvas",
+      "infoPlist": {
+        "UIRequiresFullScreen": false
+      }
+    },
+    "android": {
+      "package": "com.joowon.flipcanvas",
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "server"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-dev-client",
+      "expo-sqlite"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

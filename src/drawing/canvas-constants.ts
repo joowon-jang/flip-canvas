@@ -1,0 +1,1 @@
+export const CANONICAL_CANVAS_SIZE = 360;
