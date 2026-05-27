@@ -305,7 +305,7 @@ function PaintStrokePreview({
    );
 
   return (
-     <View pointerEvents="none" style={[styles.preview, { width: canvasSize, height: canvasSize }]}>
+     <View style={[styles.preview, { width: canvasSize, height: canvasSize }, { pointerEvents: "none" }]}>
        <Svg
         width={canvasSize}
         height={canvasSize}
@@ -374,7 +374,7 @@ function MaskedStrokePreview({
   }, [cacheable, layers, maskId, renderOptions]);
 
   return (
-     <View pointerEvents="none" style={[styles.preview, { width: canvasSize, height: canvasSize }]}>
+     <View style={[styles.preview, { width: canvasSize, height: canvasSize }, { pointerEvents: "none" }]}>
        <Svg
         width={canvasSize}
         height={canvasSize}

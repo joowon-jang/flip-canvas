@@ -19,7 +19,7 @@ export function NotebookPaper({ children, fold = true, style, ...props }: Notebo
       {children}
       {fold ? (
         <View
-          pointerEvents="none"
+
           style={styles.fold}
         />
       ) : null}

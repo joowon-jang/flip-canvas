@@ -449,7 +449,7 @@ function FrameThumbnailBase({
         onResponderTerminationRequest={handleResponderTerminationRequest}
         style={styles.thumbnailSelectArea}
       >
-        {canMove ? <View pointerEvents="none" style={styles.dragHandle} /> : null}
+        {canMove ? <View style={[styles.dragHandle, { pointerEvents: "none" }]} /> : null}
         <FrameThumbnailPreview frame={frame} previewSide={previewSide} previewScale={previewScale} />
         <Text
           selectable={false}
@@ -721,7 +721,7 @@ export function FrameGrid({
         {hasMoreFramesBelow ? (
           <View
             testID="frame-grid-more-hint"
-            pointerEvents="none"
+
             style={styles.moreHint}
           >
             <View
