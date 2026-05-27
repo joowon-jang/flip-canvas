@@ -34,20 +34,20 @@ type StrokeRenderOptions = {
 };
 
 type StrokeRenderCommand =
-    | {
+   | {
        type: "circle";
        cx: number;
        cy: number;
        radius: number;
        color: string;
-      }
-    | {
+     }
+   | {
        type: "path";
        path: string;
        strokeWidth: number;
        color: string;
        fill: boolean;
-      };
+     };
 
 const committedStrokeRenderCache = new WeakMap<Stroke, Map<string, StrokeRenderCommand[]>>();
 const EMPTY_STROKES: Stroke[] = [];
@@ -70,10 +70,7 @@ function strokeRenderCacheKey({
   renderMode,
   pointsPerPressureSegment,
 }: StrokeRenderOptions): string {
-  const s = String(scale);
-  const m = String(renderMode);
-  const p = String(pointsPerPressureSegment);
-  return `${s}:${m}:${p}`;
+  return `${scale}:${renderMode}:${pointsPerPressureSegment}`;
 }
 
 function renderStrokeCommands(
@@ -83,7 +80,7 @@ function renderStrokeCommands(
   const points = Array.isArray(stroke.points) ? stroke.points : [];
   if (points.length === 0) {
     return [];
-   }
+  }
 
   const color = strokeColor(stroke);
   const dots = buildStrokeDots(stroke, options.scale);
@@ -94,34 +91,34 @@ function renderStrokeCommands(
       cy: dot.cy,
       radius: dot.radius,
       color,
-     }));
-   }
+    }));
+  }
 
   if (options.renderMode === "simple") {
     return [
-       {
+      {
         type: "path",
         path: buildStrokePath(points, options.scale),
         strokeWidth: simpleStrokeWidth(stroke, options.scale),
         fill: false,
         color,
-       },
-     ];
-   }
+      },
+    ];
+  }
 
   return buildPressureStrokeSegments(
     stroke,
     options.scale,
     options.renderMode === "pressure-lite"
-       ? options.pointsPerPressureSegment
-       : undefined,
-   ).map((segment) => ({
+      ? options.pointsPerPressureSegment
+      : undefined,
+  ).map((segment) => ({
     type: "path",
     path: segment.path,
     strokeWidth: segment.strokeWidth,
     fill: segment.fill,
     color,
-   }));
+  }));
 }
 
 function cacheStrokeRender(
@@ -131,21 +128,21 @@ function cacheStrokeRender(
 ): StrokeRenderCommand[] {
   if (!cacheable) {
     return renderStrokeCommands(stroke, options);
-   }
+  }
 
   const key = strokeRenderCacheKey(options);
   const committed = committedStrokeRenderCache.get(stroke);
   const cached = committed?.get(key);
   if (cached) {
     return cached;
-   }
+  }
 
   const commands = renderStrokeCommands(stroke, options);
   const next = committed ?? new Map<string, StrokeRenderCommand[]>();
   next.set(key, commands);
   if (!committed) {
     committedStrokeRenderCache.set(stroke, next);
-   }
+  }
   return commands;
 }
 
@@ -154,8 +151,7 @@ function commandKey(
   index: number,
   prefix: string,
 ): string {
-  const sid = typeof stroke.id === "string" ? stroke.id : String(stroke.id);
-  return `${prefix}-${sid}-${index}`;
+  return `${prefix}-${stroke.id}-${index}`;
 }
 
 function renderCommand(
@@ -166,18 +162,18 @@ function renderCommand(
   const color = colorOverride ?? command.color;
   if (command.type === "circle") {
     return (
-       <Circle
+      <Circle
         key={key}
         cx={command.cx}
         cy={command.cy}
         r={command.radius}
         fill={color}
-       />
-     );
-   }
+      />
+    );
+  }
 
   return (
-     <Path
+    <Path
       key={key}
       d={command.path}
       fill={command.fill ? color : "none"}
@@ -185,8 +181,8 @@ function renderCommand(
       strokeWidth={command.strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
-     />
-   );
+    />
+  );
 }
 
 function renderStrokeCommandsForLayer(
@@ -198,10 +194,13 @@ function renderStrokeCommandsForLayer(
 ) {
   return cacheStrokeRender(stroke, options, cacheable).map((command, index) =>
     renderCommand(command, commandKey(stroke, index, keyPrefix), colorOverride),
-   );
+  );
 }
 
-const paintStrokeSvgCache = new WeakMap<Stroke[], Map<string, React.ReactNode[]>>();
+const paintStrokeSvgCache = new WeakMap<
+  Stroke[],
+  Map<string, React.ReactNode[]>,
+>();
 
 function renderPaintStrokeSvg(
   strokes: Stroke[],
@@ -216,27 +215,27 @@ function renderPaintStrokeSvg(
     const cachedElements = cached?.get(key);
     if (cachedElements) {
       return cachedElements;
-     }
-   }
+    }
+  }
 
   const elements: React.ReactNode[] = [];
   strokes.forEach((stroke, strokeIndex) => {
     const color =
       stroke.tool === "eraser" ? paintEraserColor() : strokeColor(stroke);
     cacheStrokeRender(stroke, options, cacheable).forEach(
-       (command, commandIndex) => {
+      (command, commandIndex) => {
         elements.push(
-           <g key={`stroke-${strokeIndex}-${commandIndex}`} opacity={opacity}>
-             {renderCommand(
+          <g key={`stroke-${strokeIndex}-${commandIndex}`} opacity={opacity}>
+            {renderCommand(
               command,
               commandKey(stroke, commandIndex, `paint-stroke-${strokeIndex}`),
               color,
-             )}
-           </g>,
-         );
-       },
-     );
-   });
+            )}
+          </g>,
+        );
+      },
+    );
+  });
 
   if (cacheable) {
     const cached = paintStrokeSvgCache.get(strokes);
@@ -244,8 +243,8 @@ function renderPaintStrokeSvg(
     next.set(key, elements);
     if (!cached) {
       paintStrokeSvgCache.set(strokes, next);
-     }
-   }
+    }
+  }
 
   return elements;
 }
@@ -258,7 +257,7 @@ export function prewarmStrokePreviewCache(
     scale: options.scale,
     renderMode: options.renderMode,
     pointsPerPressureSegment: options.pointsPerPressureSegment,
-   };
+  };
 
   if (options.eraserRenderMode === "paint") {
     renderPaintStrokeSvg(
@@ -267,13 +266,13 @@ export function prewarmStrokePreviewCache(
       true,
       CANONICAL_CANVAS_SIZE * options.scale,
       options.opacity ?? 1,
-     );
+    );
     return;
-   }
+  }
 
   for (const stroke of strokes) {
     cacheStrokeRender(stroke, renderOptions, true);
-   }
+  }
 }
 
 function PaintStrokePreview({
@@ -285,36 +284,42 @@ function PaintStrokePreview({
   cacheable = true,
 }: Pick<
   StrokePreviewProps,
-   | "strokes"
-   | "scale"
-   | "opacity"
-   | "renderMode"
-   | "pointsPerPressureSegment"
-   | "cacheable",
+  | "strokes"
+  | "scale"
+  | "opacity"
+  | "renderMode"
+  | "pointsPerPressureSegment"
+  | "cacheable",
 >) {
   const safeStrokes = Array.isArray(strokes) ? strokes : EMPTY_STROKES;
   const canvasSize = CANONICAL_CANVAS_SIZE * scale;
   const renderOptions = useMemo(
-     () => ({ scale, renderMode, pointsPerPressureSegment }),
-     [pointsPerPressureSegment, renderMode, scale],
-   );
+    () => ({ scale, renderMode, pointsPerPressureSegment }),
+    [pointsPerPressureSegment, renderMode, scale],
+  );
   const elements = useMemo(
-     () =>
-      renderPaintStrokeSvg(safeStrokes, renderOptions, cacheable, canvasSize, opacity),
-     [cacheable, canvasSize, opacity, renderOptions, safeStrokes],
-   );
+    () =>
+      renderPaintStrokeSvg(
+        safeStrokes,
+        renderOptions,
+        cacheable,
+        canvasSize,
+        opacity,
+      ),
+    [cacheable, canvasSize, opacity, renderOptions, safeStrokes],
+  );
 
   return (
-     <View pointerEvents="none" style={[styles.preview, { width: canvasSize, height: canvasSize }]}>
-       <Svg
+    <View pointerEvents="none" style={[styles.preview, { width: canvasSize, height: canvasSize }]}>
+      <Svg
         width={canvasSize}
         height={canvasSize}
         viewBox={`0 0 ${canvasSize} ${canvasSize}`}
-       >
-         {elements}
-       </Svg>
-     </View>
-   );
+      >
+        {elements}
+      </Svg>
+    </View>
+  );
 }
 
 function MaskedStrokePreview({
@@ -331,60 +336,59 @@ function MaskedStrokePreview({
     Array.isArray(maskStrokes) ? maskStrokes : EMPTY_STROKES;
   const canvasSize = CANONICAL_CANVAS_SIZE * scale;
   const renderOptions = useMemo(
-     () => ({ scale, renderMode, pointsPerPressureSegment }),
-     [pointsPerPressureSegment, renderMode, scale],
-   );
+    () => ({ scale, renderMode, pointsPerPressureSegment }),
+    [pointsPerPressureSegment, renderMode, scale],
+  );
   const maskId = `stroke_preview_mask_${useId().replace(/:/g, "_")}`;
   const activeMaskId = `${maskId}_active`;
   const layers = useMemo(
-     () => buildStrokeRenderLayers(safeStrokes),
-     [safeStrokes],
-   );
+    () => buildStrokeRenderLayers(safeStrokes),
+    [safeStrokes],
+  );
   const activeMaskStrokes = useMemo(
-     () => safeMaskStrokes.filter((stroke) => stroke.tool === "eraser"),
-     [safeMaskStrokes],
-   );
+    () => safeMaskStrokes.filter((stroke) => stroke.tool === "eraser"),
+    [safeMaskStrokes],
+  );
   const hasLayerMask = layers.some(
-     (layer) => layer.laterEraserStrokes.length > 0,
-   );
+    (layer) => layer.laterEraserStrokes.length > 0,
+  );
   const hasActiveMask = activeMaskStrokes.length > 0;
-
-  const renderedLayers = useMemo(() => {
-    return layers.map((layer, layerIndex) => {
-      return (
-         <G
+  const renderedLayers = useMemo(
+    () =>
+      layers.map((layer, layerIndex) => (
+        <G
           key={`stroke-layer-${layerIndex}`}
           mask={
             layer.laterEraserStrokes.length > 0
-               ? `url(#${maskId}_${layerIndex})`
-               : undefined
-           }
-         >
-           {layer.drawingStrokes.map((stroke) =>
+              ? `url(#${maskId}_${layerIndex})`
+              : undefined
+          }
+        >
+          {layer.drawingStrokes.map((stroke) =>
             renderStrokeCommandsForLayer(
               stroke,
               renderOptions,
               cacheable,
-               `stroke-${layerIndex}`,
-             ),
-           )}
-         </G>
-      );
-    });
-  }, [cacheable, layers, maskId, renderOptions]);
+              `stroke-${layerIndex}`,
+            ),
+          )}
+        </G>,
+      )),
+    [cacheable, layers, maskId, renderOptions],
+  );
 
   return (
-     <View pointerEvents="none" style={[styles.preview, { width: canvasSize, height: canvasSize }]}>
-       <Svg
+    <View pointerEvents="none" style={[styles.preview, { width: canvasSize, height: canvasSize }]}>
+      <Svg
         width={canvasSize}
         height={canvasSize}
         viewBox={`0 0 ${canvasSize} ${canvasSize}`}
-       >
-         {hasLayerMask || hasActiveMask ? (
-           <Defs>
-             {layers.map((layer, layerIndex) =>
+      >
+        {hasLayerMask || hasActiveMask ? (
+          <Defs>
+            {layers.map((layer, layerIndex) =>
               layer.laterEraserStrokes.length > 0 ? (
-                 <Mask
+                <Mask
                   key={`${maskId}_${layerIndex}`}
                   id={`${maskId}_${layerIndex}`}
                   x={0}
@@ -393,28 +397,28 @@ function MaskedStrokePreview({
                   height={canvasSize}
                   maskUnits="userSpaceOnUse"
                   maskContentUnits="userSpaceOnUse"
-                 >
-                   <Rect
+                >
+                  <Rect
                     x={0}
                     y={0}
                     width={canvasSize}
                     height={canvasSize}
                     fill="#FFFFFF"
-                   />
-                   {layer.laterEraserStrokes.map((stroke) =>
+                  />
+                  {layer.laterEraserStrokes.map((stroke) =>
                     renderStrokeCommandsForLayer(
                       stroke,
                       renderOptions,
                       cacheable,
-                       `laterEraserStrokes-${layerIndex}`,
-                       "#000000",
-                     ),
-                   )}
-                 </Mask>
-               ) : null,
-             )}
-             {hasActiveMask ? (
-               <Mask
+                      `laterEraserStrokes-${layerIndex}`,
+                      "#000000",
+                    ),
+                  )}
+                </Mask>
+              ) : null,
+            )}
+            {hasActiveMask ? (
+              <Mask
                 id={activeMaskId}
                 x={0}
                 y={0}
@@ -422,33 +426,33 @@ function MaskedStrokePreview({
                 height={canvasSize}
                 maskUnits="userSpaceOnUse"
                 maskContentUnits="userSpaceOnUse"
-               >
-                 <Rect
+              >
+                <Rect
                   x={0}
                   y={0}
                   width={canvasSize}
                   height={canvasSize}
                   fill="#FFFFFF"
-                 />
-                 {activeMaskStrokes.map((stroke) =>
+                />
+                {activeMaskStrokes.map((stroke) =>
                   renderStrokeCommandsForLayer(
                     stroke,
                     renderOptions,
                     false,
-                     "activeMaskStrokes",
-                     "#000000",
-                   ),
-                 )}
-               </Mask>
-             ) : null}
-           </Defs>
-         ) : null}
-         <G mask={hasActiveMask ? `url(#${activeMaskId})` : undefined} opacity={opacity}>
-           {renderedLayers}
-         </G>
-       </Svg>
-     </View>
-   );
+                    "activeMaskStrokes",
+                    "#000000",
+                  ),
+                )}
+              </Mask>
+            ) : null}
+          </Defs>
+        ) : null}
+        <G mask={hasActiveMask ? `url(#${activeMaskId})` : undefined} opacity={opacity}>
+          {renderedLayers}
+        </G>
+      </Svg>
+    </View>
+  );
 }
 
 function StrokePreviewBase({
@@ -457,7 +461,7 @@ function StrokePreviewBase({
 }: StrokePreviewProps) {
   if (eraserRenderMode === "paint") {
     return <PaintStrokePreview {...props} />;
-   }
+  }
 
   return <MaskedStrokePreview {...props} />;
 }
@@ -468,5 +472,5 @@ const styles = StyleSheet.create({
   preview: {
     position: "absolute",
     inset: 0,
-   },
+  },
 });
