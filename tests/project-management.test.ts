@@ -10,8 +10,6 @@ const project: FlipProject = {
   fps: 12,
   createdAt: 10,
   updatedAt: 20,
-  shareId: "share-1",
-  shareUrl: "https://example.com/v/share-1",
   frames: [
     {
       id: "frame-1",
@@ -32,25 +30,21 @@ const project: FlipProject = {
 };
 
 describe("project management helpers", () => {
-  it("renames a project while preserving frames and share metadata", () => {
+  it("renames a project while preserving frames", () => {
     const renamed = renameProjectForManagement(project, "  새 이름  ", 99);
 
     equal(renamed.title, "새 이름");
     equal(renamed.updatedAt, 99);
     equal(renamed.frames, project.frames);
-    equal(renamed.shareId, project.shareId);
-    equal(renamed.shareUrl, project.shareUrl);
   });
 
-  it("duplicates a project with new ids and without copied share links", () => {
+  it("duplicates a project with new ids", () => {
     let idIndex = 0;
     const duplicated = duplicateProjectForManagement(project, () => `copy-${++idIndex}`, 100);
 
     equal(duplicated.title, "원본 복사본");
     equal(duplicated.createdAt, 100);
     equal(duplicated.updatedAt, 100);
-    equal(duplicated.shareId, undefined);
-    equal(duplicated.shareUrl, undefined);
     notEqual(duplicated.id, project.id);
     notEqual(duplicated.frames[0].id, project.frames[0].id);
     notEqual(duplicated.frames[0].strokes[0].id, project.frames[0].strokes[0].id);

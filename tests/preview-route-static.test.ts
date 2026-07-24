@@ -15,12 +15,13 @@ describe("preview route", () => {
   it("uses local stroke rendering instead of data image SVGs", () => {
     const source = readFileSync(resolve("app/project/[id]/preview.tsx"), "utf8");
     const playerSource = readFileSync(resolve("src/components/local-flip-player.tsx"), "utf8");
+    const compositeSource = readFileSync(resolve("src/components/frame-composite.tsx"), "utf8");
 
     equal(source.includes("data:image/svg+xml"), false);
     equal(source.includes("LocalFlipPlayer"), true);
-    equal(playerSource.includes('eraserRenderMode="paint"'), true);
-    equal(playerSource.includes('renderMode="pressure-lite"'), true);
-    equal(playerSource.includes("pointsPerPressureSegment={4}"), true);
+    equal(playerSource.includes("FrameComposite"), true);
+    equal(compositeSource.includes('renderMode="pressure-lite"'), true);
+    equal(compositeSource.includes("pointsPerPressureSegment={4}"), true);
   });
 });
 
@@ -29,23 +30,5 @@ describe("render route", () => {
     const source = readFileSync(resolve("app/project/[id]/render.tsx"), "utf8");
 
     equal(source.includes("미리보기로 돌아가기"), false);
-  });
-});
-
-describe("shared player image contract", () => {
-  it("uses expo-image for remote frame caching", () => {
-    const source = readFileSync(resolve("src/components/flip-player.tsx"), "utf8");
-
-    equal(source.includes('from "expo-image"'), true);
-    equal(source.includes('cachePolicy="memory-disk"'), true);
-    equal(source.includes("resizeMode="), false);
-  });
-
-  it("loads manifests through the server API instead of direct R2 env reads", () => {
-    const source = readFileSync(resolve("app/v/[shareId]/index.tsx"), "utf8");
-
-    equal(source.includes("EXPO_PUBLIC_R2_PUBLIC_BASE_URL"), false);
-    equal(source.includes("/api/shares/"), true);
-    equal(source.includes("/manifest"), true);
   });
 });

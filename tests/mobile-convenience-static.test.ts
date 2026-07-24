@@ -10,8 +10,6 @@ const projectScreens = [
   "app/project/[id]/frames.tsx",
   "app/project/[id]/preview.tsx",
   "app/project/[id]/render.tsx",
-  "app/project/[id]/share.tsx",
-  "app/v/[shareId]/index.tsx",
 ];
 
 describe("mobile convenience UI", () => {
@@ -51,16 +49,6 @@ describe("mobile convenience UI", () => {
     ok(source.includes("duplicateProject"));
     ok(source.includes("deleteProject"));
     ok(source.includes("Alert.alert"));
-  });
-
-  it("copies share links through expo clipboard with visible feedback", () => {
-    const packageJson = readFileSync(resolve("package.json"), "utf8");
-    const source = readFileSync(resolve("app/project/[id]/share.tsx"), "utf8");
-
-    ok(packageJson.includes("expo-clipboard"));
-    ok(source.includes("expo-clipboard"));
-    ok(source.includes("링크 복사"));
-    ok(source.includes("복사됨"));
   });
 
   it("keeps the native stack header disabled", () => {

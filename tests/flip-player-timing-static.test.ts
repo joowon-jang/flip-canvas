@@ -24,18 +24,15 @@ describe("flip player timing", () => {
 
   it("does not clamp preview playback to a high-FPS minimum interval", () => {
     const localPlayerSource = readFileSync(resolve("src/components/local-flip-player.tsx"), "utf8");
-    const sharedPlayerSource = readFileSync(resolve("src/components/flip-player.tsx"), "utf8");
     const minimumIntervalClamp = /Math\.max\(\s*(?:90|120|140|180)\s*,\s*1000\s*\//;
 
     equal(minimumIntervalClamp.test(localPlayerSource), false);
-    equal(minimumIntervalClamp.test(sharedPlayerSource), false);
   });
 
   it("shows whole frames in FPS order without transition animation", () => {
     const localPlayerSource = readFileSync(resolve("src/components/local-flip-player.tsx"), "utf8");
-    const sharedPlayerSource = readFileSync(resolve("src/components/flip-player.tsx"), "utf8");
 
-    for (const source of [localPlayerSource, sharedPlayerSource]) {
+    for (const source of [localPlayerSource]) {
       equal(source.includes("setInterval"), true);
       equal(source.includes("frameDurationMs"), true);
       equal(source.includes("Animated"), false);
