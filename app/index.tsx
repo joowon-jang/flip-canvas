@@ -4,8 +4,8 @@ import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, StyleSheet, Tex
 
 import { AppSurface } from "../src/components/app-surface";
 import { Button } from "../src/components/button";
+import { FrameComposite } from "../src/components/frame-composite";
 import { NotebookPaper } from "../src/components/notebook-paper";
-import { StrokePreview } from "../src/components/stroke-preview";
 import { useProject, useProjectActions, useProjectSummaries } from "../src/state/project-store";
 import { shadow, theme } from "../src/theme";
 import type { FlipFrame, ProjectSummary } from "../src/types/flipbook";
@@ -214,7 +214,7 @@ function ProjectCardPreviewFallback({ projectId, previewFrame }: { projectId: st
 }
 
 function FirstFramePreview({ frame }: { frame?: FlipFrame }) {
-  return <StrokePreview strokes={frame?.strokes ?? []} scale={0.15} renderMode="pressure-lite" pointsPerPressureSegment={4} eraserRenderMode="paint" />;
+  return frame ? <FrameComposite frame={frame} size={54} /> : null;
 }
 
 const styles = StyleSheet.create({

@@ -7,7 +7,7 @@ import { shadow, theme } from "../theme";
 import type { FlipFrame } from "../types/flipbook";
 import { getDraggedFrameOffset, getFrameReorderPreview, getFrameReorderTargetIndexFromPoint, getGridReorderTargetIndex, getStripReorderTargetIndex, type FrameReorderSlot } from "./frame-reorder";
 import { getFrameGridMetrics, getFrameStripThumbnailMetrics } from "./frame-strip-metrics";
-import { StrokePreview } from "./stroke-preview";
+import { FrameComposite } from "./frame-composite";
 
 type FrameStripProps = {
   frames: FlipFrame[];
@@ -287,13 +287,12 @@ type FrameThumbnailProps = {
 type FrameThumbnailPreviewProps = {
   frame: FlipFrame;
   previewSide: number;
-  previewScale: number;
 };
 
-function FrameThumbnailPreviewBase({ frame, previewSide, previewScale }: FrameThumbnailPreviewProps) {
+function FrameThumbnailPreviewBase({ frame, previewSide }: FrameThumbnailPreviewProps) {
   return (
     <View style={[styles.thumbnailCanvas, { width: previewSide, height: previewSide }]}>
-      <StrokePreview strokes={frame.strokes} scale={previewScale} renderMode="pressure-lite" pointsPerPressureSegment={4} eraserRenderMode="paint" />
+      <FrameComposite frame={frame} size={previewSide} />
     </View>
   );
 }
@@ -302,8 +301,7 @@ const FrameThumbnailPreview = memo(
   FrameThumbnailPreviewBase,
   (previous, next) =>
     previous.frame === next.frame &&
-    previous.previewSide === next.previewSide &&
-    previous.previewScale === next.previewScale,
+    previous.previewSide === next.previewSide,
 );
 
 function FrameThumbnailBase({
@@ -450,7 +448,7 @@ function FrameThumbnailBase({
         style={styles.thumbnailSelectArea}
       >
         {canMove ? <View style={[styles.dragHandle, { pointerEvents: "none" }]} /> : null}
-        <FrameThumbnailPreview frame={frame} previewSide={previewSide} previewScale={previewScale} />
+        <FrameThumbnailPreview frame={frame} previewSide={previewSide} />
         <Text
           selectable={false}
           style={[

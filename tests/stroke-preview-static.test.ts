@@ -78,41 +78,38 @@ describe("stroke preview render cache contract", () => {
     equal(source.includes("function MaskedStrokePreview"), true);
     equal(source.indexOf("function PaintStrokePreview") < source.indexOf("function MaskedStrokePreview"), true);
     equal(source.indexOf("function PaintStrokePreview"), source.lastIndexOf("function PaintStrokePreview"));
-    equal(source.indexOf("const layers = useMemo(() => buildStrokeRenderLayers(safeStrokes)") > source.indexOf("function MaskedStrokePreview"), true);
+    equal(source.indexOf("const layers = useMemo(") > source.indexOf("function MaskedStrokePreview"), true);
   });
 
-  it("renders paint-mode frames through one cached Skia picture instead of SVG path nodes", () => {
+  it("renders paint-mode frames through cached SVG commands", () => {
     const source = readFileSync(resolve("src/components/stroke-preview.tsx"), "utf8");
 
-    equal(source.includes("@shopify/react-native-skia"), true);
-    equal(source.includes("paintStrokePictureCache"), true);
-    equal(source.includes("WeakMap<Stroke[], Map<string, SkPicture>>"), true);
-    equal(source.includes("renderPaintStrokePicture"), true);
-    equal(source.includes("paintStrokePictureCache.set(strokes, next)"), true);
-    equal(source.includes("<Picture picture={picture}"), true);
+    equal(source.includes("@shopify/react-native-skia"), false);
+    equal(source.includes("paintStrokeSvgCache"), true);
+    equal(source.includes("WeakMap<Stroke[], Map<string, React.ReactNode[]>>"), true);
+    equal(source.includes("renderPaintStrokeSvg"), true);
+    equal(source.includes("paintStrokeSvgCache.set(strokes, next)"), true);
+    equal(source.includes("<Svg"), true);
     equal(source.includes("SvgXml"), false);
   });
 
-  it("applies paint-mode opacity through a Skia saveLayer so onion frames stay visually distinct without dotted overlaps", () => {
+  it("applies paint-mode opacity to each cached SVG stroke group", () => {
     const source = readFileSync(resolve("src/components/stroke-preview.tsx"), "utf8");
 
-    equal(source.includes("canvas.saveLayer"), true);
-    equal(source.includes("canvas.restore()"), true);
-    equal(source.includes("layerPaint.setAlphaf(opacity)"), true);
-    equal(source.includes("paint.setAlphaf(opacity)"), false);
-    equal(source.includes("drawCommandToSkiaPicture(command, color, opacity"), false);
+    equal(source.includes("<G key={`stroke-${strokeIndex}-${commandIndex}`} opacity={opacity}>"), true);
+    equal(source.includes("<g "), false);
+    equal(source.includes("canvas.saveLayer"), false);
+    equal(source.includes("layerPaint.setAlphaf(opacity)"), false);
   });
 
   it("fills pressure outlines instead of stroking layered pressure segments", () => {
     const previewSource = readFileSync(resolve("src/components/stroke-preview.tsx"), "utf8");
     const pressureSource = readFileSync(resolve("src/drawing/pressure-stroke.ts"), "utf8");
-    const uploadSource = readFileSync(resolve("src/share/upload-share.ts"), "utf8");
 
     equal(pressureSource.includes("buildPressureOutlinePath"), true);
     equal(pressureSource.includes("fill: true"), true);
     equal(previewSource.includes("command.fill"), true);
-    equal(previewSource.includes("paint.setStyle(PaintStyle.Fill)"), true);
-    equal(uploadSource.includes('fill="${color}"'), true);
+    equal(previewSource.includes("command.fill ? color : \"none\""), true);
   });
 
   it("exposes a cache prewarmer for large canvas frame selection", () => {
@@ -120,7 +117,7 @@ describe("stroke preview render cache contract", () => {
     const drawSource = readFileSync(resolve("app/project/[id]/draw.tsx"), "utf8");
 
     equal(source.includes("export function prewarmStrokePreviewCache"), true);
-    equal(source.includes("renderPaintStrokePicture(strokes, renderOptions, true"), true);
+    equal(source.includes("renderPaintStrokeSvg("), true);
     equal(drawSource.includes("prewarmStrokePreviewCache"), true);
     equal(drawSource.includes("project.frames.forEach((item) =>"), true);
   });

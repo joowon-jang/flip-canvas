@@ -10,13 +10,19 @@ const project: FlipProject = {
   fps: 12,
   createdAt: 10,
   updatedAt: 20,
-  shareId: "s1",
-  shareUrl: "https://example.com/v/s1",
   frames: [
     {
       id: "f1",
       index: 0,
       updatedAt: 21,
+      background: {
+        assetPath: "projects/p1/frames/f1.png",
+        source: "rife",
+        model: "fal-ai/rife",
+        sourceFrameIds: ["source-1", "source-2"],
+        time: 0.5,
+        generatedAt: 20,
+      },
       strokes: [
         {
           id: "st1",

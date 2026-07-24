@@ -25,6 +25,8 @@ type FrameRow = {
   id: string;
   project_id: string;
   frame_index: number;
+  background_asset_path: string | null;
+  background_metadata_json: string | null;
   thumbnail_uri: string | null;
   updated_at: number;
 };
@@ -62,8 +64,6 @@ function toProjectRecord(row: ProjectRow): ProjectRecord {
     fps: row.fps,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
-    shareId: row.share_id ?? undefined,
-    shareUrl: row.share_url ?? undefined,
   };
 }
 
@@ -72,6 +72,8 @@ function toFrameRecord(row: FrameRow): FrameRecord {
     id: row.id,
     projectId: row.project_id,
     index: row.frame_index,
+    backgroundAssetPath: row.background_asset_path ?? undefined,
+    backgroundMetadataJson: row.background_metadata_json ?? undefined,
     thumbnailUri: row.thumbnail_uri ?? undefined,
     updatedAt: row.updated_at,
   };
@@ -128,6 +130,8 @@ async function createCurrentSchema(databaseHandle: SQLite.SQLiteDatabase): Promi
       id TEXT PRIMARY KEY NOT NULL,
       project_id TEXT NOT NULL,
       frame_index INTEGER NOT NULL,
+      background_asset_path TEXT,
+      background_metadata_json TEXT,
       thumbnail_uri TEXT,
       updated_at INTEGER NOT NULL
     );
@@ -146,6 +150,17 @@ async function createCurrentSchema(databaseHandle: SQLite.SQLiteDatabase): Promi
     CREATE INDEX IF NOT EXISTS frames_project_index ON frames(project_id, frame_index);
     CREATE INDEX IF NOT EXISTS strokes_frame_index ON strokes(frame_id, stroke_index);
   `);
+}
+
+async function ensureFrameBackgroundColumns(databaseHandle: SQLite.SQLiteDatabase): Promise<void> {
+  const columns = await databaseHandle.getAllAsync<{ name: string }>("PRAGMA table_info(frames)");
+  const names = new Set(columns.map((column) => column.name));
+  if (!names.has("background_asset_path")) {
+    await databaseHandle.execAsync("ALTER TABLE frames ADD COLUMN background_asset_path TEXT;");
+  }
+  if (!names.has("background_metadata_json")) {
+    await databaseHandle.execAsync("ALTER TABLE frames ADD COLUMN background_metadata_json TEXT;");
+  }
 }
 
 async function migrationAlreadyRan(databaseHandle: SQLite.SQLiteDatabase): Promise<boolean> {
@@ -191,6 +206,7 @@ export async function initProjectRepository(): Promise<void> {
     await databaseHandle.execAsync("ALTER TABLE projects RENAME TO legacy_projects_json;");
   }
   await createCurrentSchema(databaseHandle);
+  await ensureFrameBackgroundColumns(databaseHandle);
   await migrateLegacyProjects(databaseHandle);
 }
 
@@ -204,7 +220,7 @@ export async function loadProjectSummaries(): Promise<ProjectSummary[]> {
     ORDER BY p.updated_at DESC
   `);
   const framesForPreview = await databaseHandle.getAllAsync<FrameRow>(
-    "SELECT id, project_id, frame_index, thumbnail_uri, updated_at FROM frames ORDER BY project_id ASC, frame_index ASC",
+    "SELECT id, project_id, frame_index, background_asset_path, background_metadata_json, thumbnail_uri, updated_at FROM frames ORDER BY project_id ASC, frame_index ASC",
   );
   const firstPreviewFrameByProjectId = new Map<string, FrameRow>();
   for (const frame of framesForPreview) {
@@ -255,7 +271,7 @@ export async function loadProject(projectId: string): Promise<FlipProject | unde
   }
 
   const frames = await databaseHandle.getAllAsync<FrameRow>(
-    "SELECT id, project_id, frame_index, thumbnail_uri, updated_at FROM frames WHERE project_id = ? ORDER BY frame_index ASC",
+    "SELECT id, project_id, frame_index, background_asset_path, background_metadata_json, thumbnail_uri, updated_at FROM frames WHERE project_id = ? ORDER BY frame_index ASC",
     projectId,
   );
   const strokes = await databaseHandle.getAllAsync<StrokeRow>(
@@ -284,8 +300,8 @@ async function writeProjectMetadata(databaseHandle: SqlWriteConnection, record: 
     record.fps,
     record.createdAt,
     record.updatedAt,
-    record.shareId ?? null,
-    record.shareUrl ?? null,
+    null,
+    null,
   );
 }
 
@@ -311,11 +327,14 @@ async function writeFrameRecords(
   strokes: StrokeRecord[],
 ): Promise<void> {
   await databaseHandle.runAsync(
-    `INSERT OR REPLACE INTO frames (id, project_id, frame_index, thumbnail_uri, updated_at)
-     VALUES (?, ?, ?, ?, ?)`,
+    `INSERT OR REPLACE INTO frames (
+       id, project_id, frame_index, background_asset_path, background_metadata_json, thumbnail_uri, updated_at
+     ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
     frameRecord.id,
     frameRecord.projectId,
     frameRecord.index,
+    frameRecord.backgroundAssetPath ?? null,
+    frameRecord.backgroundMetadataJson ?? null,
     frameRecord.thumbnailUri ?? null,
     frameRecord.updatedAt,
   );

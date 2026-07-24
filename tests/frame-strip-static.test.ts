@@ -235,13 +235,12 @@ describe("frame strip layout contract", () => {
     equal(source.includes("accessibilityState"), true);
   });
 
-  it("uses paint-mode eraser rendering for thumbnails so undo and redo do not rebuild masks", () => {
+  it("uses the shared composite renderer so generated backgrounds and strokes stay consistent", () => {
     const source = readFileSync(resolve("src/components/frame-strip.tsx"), "utf8");
+    const composite = readFileSync(resolve("src/components/frame-composite.tsx"), "utf8");
 
-    equal(source.includes('eraserRenderMode="paint"'), true);
-    equal(source.includes('renderMode="pressure-lite"'), true);
-    equal(source.includes("pointsPerPressureSegment={4}"), true);
-    equal(source.includes('renderMode="simple"'), false);
+    equal(source.includes("FrameComposite"), true);
+    equal(composite.includes('eraserRenderMode={frame.background ? "mask" : "paint"}'), true);
   });
 
   it("keeps each thumbnail drawing area square and visually separated from its label", () => {
