@@ -61,21 +61,24 @@ Flipbook Editing을 지원하는 하위 도메인이다. 원시 포인터/스타
 
 프로젝트 삭제는 저장소와 라이브러리 유스케이스가 소유해도 된다. 삭제는 프로젝트 내부 불변조건을 바꾸는 작업이 아니라 컬렉션에서 Aggregate를 제거하는 작업에 가깝다.
 
-### Sharing / Publishing
+### AI Frame Interpolation
 
-공유 가능한 배포 산출물을 만드는 컨텍스트 후보이다. 원본 프로젝트의 특정 시점 스냅샷을 읽어 공유 manifest와 frame asset을 생성한다.
+사용자가 선택한 인접 프레임 두 장 사이의 중간 장면을 생성하는 보조 컨텍스트이다. 프레임 생성은 RIFE CNN 공급자에 위임하지만, 생성 결과의 적용과 이후 편집은 Flipbook Editing이 소유한다.
 
 주요 언어:
 
-- 공유 ID(shareId)
-- 공유 URL(shareUrl)
-- 공유 manifest(ShareManifest)
-- 공유 프레임(ShareManifestFrame)
-- 업로드된 frame asset
+- 인접 프레임 쌍
+- 보간 시각(interpolation time)
+- 생성 배치
+- 고정 배경(FrameBackground)
+- 보상 권리(RewardRecord)
+- AI 요청(InterpolationJob)
 
-공유 배포물은 원본 프로젝트와 별도 산출물이다. `shareId`와 `shareUrl`은 플립북 프로젝트에 남는 게시 상태 메타데이터이지만, `ShareManifest`와 업로드된 프레임 SVG는 Sharing / Publishing 컨텍스트의 read model 또는 배포 결과로 본다.
+광고 한 번은 선택한 한 구간의 생성 배치 하나만 해제한다. 보상은 공급자 결과가 성공한 뒤 소비되며, 공급자 또는 네트워크 처리 실패 시 다시 사용할 수 있는 상태로 복구된다.
 
-공유 컨텍스트는 원본 프로젝트를 수정하지 않고, 프로젝트 스냅샷을 읽어 manifest와 frame assets를 생성한다.
+### Local Video Export
+
+원본 프로젝트의 현재 스냅샷을 읽어 선택한 해상도의 무음 H.264 MP4 또는 애니메이션 GIF를 사용자 기기에서 만드는 컨텍스트이다. 모든 프레임과 프로젝트 FPS를 유지하며, 결과는 사진 보관함에 저장하거나 운영체제 공유 시트로 보낼 수 있다. 서버 업로드와 공개 공유 URL은 이 컨텍스트에 포함하지 않는다.
 
 ## 핵심 Aggregate
 
@@ -93,7 +96,6 @@ Flipbook Editing을 지원하는 하위 도메인이다. 원시 포인터/스타
 - FPS
 - 제목(title)
 - 생성/수정 시각(createdAt, updatedAt)
-- 공유 상태 메타데이터(shareId, shareUrl)
 
 프레임과 스트로크는 현재 저장소에서 별도 테이블로 저장되지만, 도메인 소유권은 플립북 프로젝트 Aggregate 기준으로 설명한다. 테이블 분리는 저장과 조회 효율을 위한 구현 세부사항이다.
 
@@ -105,11 +107,14 @@ Flipbook Editing을 지원하는 하위 도메인이다. 원시 포인터/스타
 
 - 식별자(id)
 - 프로젝트 안의 순서(index)
+- 선택적인 생성 배경(background)
 - 스트로크 목록(strokes)
 - 썸네일 URI(thumbnailUri)
 - 수정 시각(updatedAt)
 
 프레임 index는 0부터 시작하고 프로젝트 안에서 연속되어야 한다. 이동, 추가, 복제, 삭제 후에는 다시 reindex된다.
+
+생성 배경은 `fal-ai/rife`가 만든 래스터 이미지와 두 원본 프레임 ID, 보간 시각, 생성 시각을 가진다. 배경 자체는 편집하지 않고, 그 위에 추가한 스트로크만 편집한다.
 
 ### 스트로크(Stroke)
 
@@ -137,15 +142,6 @@ Flipbook Editing을 지원하는 하위 도메인이다. 원시 포인터/스타
 - 라이브러리 화면에서 프로젝트 목록을 빠르게 보여준다.
 - 전체 프레임과 스트로크를 모두 로드하지 않고 프로젝트 제목, FPS, 프레임 수, 첫 프레임 미리보기 등을 제공한다.
 
-### 공유 manifest(ShareManifest)
-
-공유 manifest(ShareManifest)는 Aggregate가 아니라 Sharing / Publishing 컨텍스트의 read model 또는 DTO이다.
-
-역할:
-
-- 공유 ID, 제목, FPS, 프레임 수, 생성 시각, 공유 프레임 URL 목록을 담는다.
-- 공유 웹 플레이어가 원본 프로젝트 저장소를 직접 읽지 않고 배포 산출물을 재생하게 한다.
-
 ### 저장 레코드(ProjectRecord, FrameRecord, StrokeRecord)
 
 `ProjectRecord`, `FrameRecord`, `StrokeRecord`는 persistence DTO이다. 도메인 모델이 아니다.
@@ -165,12 +161,14 @@ Flipbook Editing을 지원하는 하위 도메인이다. 원시 포인터/스타
 - 프레임 index는 0부터 시작해 연속되어야 한다.
 - 마지막 남은 프레임은 삭제되지 않는다.
 - 프레임 복제는 새 프레임 ID를 부여하고, 스트로크와 포인트를 깊은 복사한다.
+- AI 프레임은 반드시 기존의 인접한 두 프레임 사이에만 들어간다.
+- 한 생성 배치에는 1~3장의 프레임만 들어가며 보간 시각은 균등하다.
+- 생성 배경은 고정 래스터이고, 이후 펜/지우개 작업은 별도 벡터 스트로크다.
 - 저장 데이터가 깨져 있거나 오래된 형식이어도 `sanitizeProject`는 유효한 프로젝트로 복구한다.
 
 아래 규칙은 현재 코드에서 관찰되지만, 도메인 규칙인지 구현 편의인지 추가 정리가 필요하다.
 
 - `thumbnailUri`의 소유권과 갱신 시점
-- `shareId`와 `shareUrl`의 상태 전이 규칙
 - 프로젝트와 프레임의 `updatedAt` 갱신 기준
 - undo/redo 기록이 프로젝트 영속 상태인지 세션 상태인지의 경계
 
@@ -184,11 +182,15 @@ Flipbook Editing을 지원하는 하위 도메인이다. 원시 포인터/스타
 | `src/model/session-history.ts` | undo/redo 스택 관리 | 편집 세션 도메인 규칙 후보 |
 | `src/model/sanitize-project.ts` | 깨진 프로젝트 데이터 복구와 정규화 | Aggregate 복원/정규화 규칙 |
 | `src/model/project-management.ts` | 프로젝트 이름 변경, 복제 | 일부는 Flipbook Editing으로 이동할 후보 |
+| `src/model/interpolation.ts` | 보간 시각 계산과 생성 프레임 삽입 | AI Frame Interpolation의 도메인 규칙 |
 | `src/state/project-store.tsx` | 앱 상태와 유스케이스 연결 | Application layer 후보 |
 | `src/storage/project-repository.ts` | SQLite 저장소 구현 | Infrastructure |
 | `src/storage/project-records.ts` | 도메인 타입과 저장 레코드 매핑 | Persistence mapper |
 | `src/drawing/*` | 입력 처리, stroke preview, draw session 연결 | Drawing Input과 UI/Application 책임이 섞여 있음 |
-| `src/share/*` | 공유 manifest, 업로드, API guard, rate limit | Sharing / Publishing 및 Infrastructure |
+| `src/ai/*` | 앱의 AI API 요청과 결과 파일 저장 | AI Frame Interpolation application/infrastructure |
+| `src/ads/*` | UMP 동의와 rewarded 광고 표시 | Reward infrastructure |
+| `src/server/*` | SSV, 보상 상태, rate limit, fal.ai 중계 | 최소 서버 infrastructure |
+| `modules/video-encoder/*` | H.264 MP4·애니메이션 GIF 네이티브 인코딩 | Local Video Export infrastructure |
 
 ## 지향 구조
 
@@ -206,16 +208,17 @@ src/domain/flipbook
 src/application
   project-use-cases.ts
   drawing-session-use-cases.ts
-  sharing-use-cases.ts
+  interpolation-use-cases.ts
+  video-export-use-cases.ts
 
 src/infrastructure/storage
   project-repository.ts
   project-records.ts
 
-src/infrastructure/share
-  upload-share.ts
-  r2-presign.ts
-  share-rate-limit.ts
+src/infrastructure/interpolation
+  reward-store.ts
+  fal-rife.ts
+  rate-limit.ts
 
 src/drawing-input
   stroke-sampling.ts
@@ -229,13 +232,13 @@ src/drawing-input
 1. 도메인 타입과 용어를 정리한다.
 2. `FlipProject` Aggregate 규칙을 한곳으로 모은다.
 3. 저장소 포트와 SQLite 구현을 분리한다.
-4. Sharing / Publishing read model과 배포 산출물을 Flipbook Editing에서 분리한다.
+4. AI 보상/공급자 infrastructure와 생성 프레임 적용 규칙을 분리한다.
 5. Drawing Input과 Stroke 생성 경계를 명확히 한다.
 
 ## 열린 질문
 
-- `shareId`와 `shareUrl`을 `FlipProject` 안에 계속 둘지, 별도 게시 상태 객체로 분리할지 결정해야 한다.
 - undo/redo 기록을 세션 전용 상태로 유지할지, 프로젝트 단위 편집 이력으로 확장할지 결정해야 한다.
 - `thumbnailUri`가 프레임 도메인 상태인지, UI/저장소 최적화를 위한 캐시인지 결정해야 한다.
 - 프로젝트 복제와 이름 변경을 Aggregate method, domain service, application use case 중 어디에 둘지 확정해야 한다.
 - Drawing Input에서 만들어지는 점 목록과 커밋된 Stroke 사이의 변환 책임을 어느 모듈에 둘지 확정해야 한다.
+- 생성 배경 파일 정리 정책을 프로젝트 삭제와 앱 저장소 정리 중 어디에서 최종 소유할지 확정해야 한다.
