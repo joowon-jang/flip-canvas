@@ -15,6 +15,7 @@ import { ScreenHeader } from "../../../src/components/screen-header";
 import { insertGeneratedFrames, interpolationTimes } from "../../../src/model/interpolation";
 import { goBackOrReplace } from "../../../src/navigation/go-back";
 import { useProject, useProjectActions } from "../../../src/state/project-store";
+import { shadow } from "../../../src/shadow";
 import { resolveFrameAssetUri } from "../../../src/storage/frame-assets";
 import { theme } from "../../../src/theme";
 import { createId } from "../../../src/utils/id";
@@ -314,10 +315,11 @@ const styles = StyleSheet.create({
   section: {
     gap: 14,
     padding: 18,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     borderRadius: theme.radius.md,
     backgroundColor: theme.color.paper,
+    ...shadow,
   },
   sectionTitle: {
     color: theme.color.graphite,
@@ -330,7 +332,7 @@ const styles = StyleSheet.create({
   pairButton: {
     paddingHorizontal: 12,
     paddingVertical: 9,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     borderRadius: theme.radius.sm,
     backgroundColor: theme.color.paperSoft,
@@ -369,8 +371,8 @@ const styles = StyleSheet.create({
   },
   generatedImage: {
     aspectRatio: 1,
-    borderRadius: theme.radius.sm,
-    borderWidth: 1,
+    borderRadius: theme.radius.xs,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
   },
   helperText: {

@@ -26,13 +26,13 @@ export function GET(): Response {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Flip Canvas 개인정보처리방침</title>
     <style>
-      :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f3ebdd; color: #102b4e; }
+      :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #E3CFA9; color: #4A3B2A; }
       body { margin: 0; padding: 32px 20px 64px; }
-      main { max-width: 720px; margin: 0 auto; background: #fffdf7; border: 1px solid #d9ccba; border-radius: 18px; padding: 28px; box-shadow: 0 10px 30px rgb(16 43 78 / 8%); }
+      main { max-width: 720px; margin: 0 auto; background: #FBF6EA; border: 1.5px solid #D9C69C; border-radius: 8px; padding: 28px; box-shadow: 0 3px 0 rgba(74, 59, 42, 0.22); }
       h1 { margin-top: 0; font-size: 28px; }
       h2 { margin-top: 28px; font-size: 19px; }
       p, li { line-height: 1.7; }
-      .updated { color: #6f685f; font-size: 14px; }
+      .updated { color: #6E5A3E; font-size: 14px; }
     </style>
   </head>
   <body>

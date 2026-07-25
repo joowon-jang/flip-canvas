@@ -35,6 +35,9 @@ modules/**/ios/DerivedData/
 .idea/
 .vscode/
 
+# macOS
+.DS_Store
+
 # Environment and secrets
 .env
 .env.*

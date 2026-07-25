@@ -3,7 +3,8 @@ import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View, type GestureResponderEvent, type NativeScrollEvent, type NativeSyntheticEvent } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
-import { shadow, theme } from "../theme";
+import { shadowSoft } from "../shadow";
+import { theme } from "../theme";
 import type { FlipFrame } from "../types/flipbook";
 import { getDraggedFrameOffset, getFrameReorderPreview, getFrameReorderTargetIndexFromPoint, getGridReorderTargetIndex, getStripReorderTargetIndex, type FrameReorderSlot } from "./frame-reorder";
 import { getFrameGridMetrics, getFrameStripThumbnailMetrics } from "./frame-strip-metrics";
@@ -744,10 +745,10 @@ const styles = StyleSheet.create({
   stripFrame: {
     overflow: "hidden",
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
-    ...shadow,
+    ...shadowSoft,
   },
   stripScroll: {
     flex: 1,
@@ -797,7 +798,7 @@ const styles = StyleSheet.create({
     opacity: 0.66,
   },
   thumbnailInactive: {
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paperSoft,
   },
@@ -821,7 +822,7 @@ const styles = StyleSheet.create({
   addThumbnail: {
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paperSoft,
   },
@@ -835,7 +836,7 @@ const styles = StyleSheet.create({
     padding: 10,
     overflow: "hidden",
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
   },

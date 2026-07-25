@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, type PressableProps } from "react-native";
 
-import { shadow, theme } from "../theme";
+import { shadow, shadowStrong } from "../shadow";
+import { theme } from "../theme";
 
 type ButtonProps = PressableProps & {
   title: string;
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: theme.radius.sm,
     borderColor: theme.color.hairline,
-    ...shadow,
   },
   buttonRegular: {
     minHeight: 46,
@@ -63,14 +63,18 @@ const styles = StyleSheet.create({
   buttonPrimary: {
     borderWidth: 0,
     backgroundColor: theme.color.deepBlue,
+    // Primary sits highest in the paper stack.
+    ...shadowStrong,
   },
   buttonSecondary: {
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     backgroundColor: theme.color.paper,
+    ...shadow,
   },
   buttonDark: {
     borderWidth: 0,
     backgroundColor: theme.color.graphite,
+    ...shadowStrong,
   },
   buttonPressed: {
     opacity: 0.72,
@@ -79,21 +83,24 @@ const styles = StyleSheet.create({
     opacity: 0.45,
   },
   label: {
-    fontWeight: "700",
+    // Design: every button label is handwritten 700.
+    fontFamily: theme.font.displayBold,
   },
   labelRegular: {
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: 17,
+    lineHeight: 22,
   },
   labelCompact: {
-    fontSize: 11,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 17,
   },
   labelOnDark: {
     color: theme.color.white,
   },
   labelSecondary: {
-    color: theme.color.deepBlue,
+    // Design: secondary labels are INK, not terracotta.
+    // Terracotta is reserved for the single primary action per screen.
+    color: theme.color.graphite,
   },
   labelDisabled: {
     color: theme.color.muted,

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 
-import { shadow, theme } from "../theme";
+import { shadow, shadowStrong } from "../shadow";
+import { theme } from "../theme";
 import { ToolOptionsPanel, type ToolOptionsPanelKind } from "./tool-options-panel";
 
 export type DrawingTool = "pen" | "eraser";
@@ -336,7 +337,7 @@ const styles = StyleSheet.create({
   horizontalDock: {
     maxHeight: 64,
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
     ...shadow,
@@ -358,7 +359,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: "stretch",
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
     ...shadow,
@@ -379,7 +380,7 @@ const styles = StyleSheet.create({
   optionsPanel: {
     position: "absolute",
     zIndex: 30,
-    ...shadow,
+    ...shadowStrong,
   },
   toolButtonGroup: {
     flexDirection: "row",
@@ -414,20 +415,20 @@ const styles = StyleSheet.create({
     backgroundColor: theme.color.graphite,
   },
   toolButtonInactive: {
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     backgroundColor: theme.color.paperSoft,
   },
   pressed: {
     opacity: 0.72,
   },
   toolLabel: {
-    fontWeight: "700",
+    fontFamily: theme.font.displayBold,
   },
   toolLabelHorizontal: {
-    fontSize: 10.5,
+    fontSize: 15,
   },
   toolLabelVertical: {
-    fontSize: 10,
+    fontSize: 13,
   },
   toolLabelActive: {
     color: theme.color.paper,
@@ -439,7 +440,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: theme.radius.sm,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
   },
   disclosureButtonHorizontal: {

@@ -4,10 +4,12 @@ import { ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } fr
 
 import { AppSurface } from "../../../src/components/app-surface";
 import { Button } from "../../../src/components/button";
+import { MaskingTape } from "../../../src/components/notebook-paper";
 import { ScreenHeader } from "../../../src/components/screen-header";
 import { goBackOrReplace } from "../../../src/navigation/go-back";
 import { useProjectActions } from "../../../src/state/project-store";
-import { shadow, theme } from "../../../src/theme";
+import { shadow } from "../../../src/shadow";
+import { theme } from "../../../src/theme";
 
 export default function NewProjectScreen() {
   const { width } = useWindowDimensions();
@@ -31,6 +33,7 @@ export default function NewProjectScreen() {
           />
 
           <View style={styles.formCard}>
+            <MaskingTape corner="left" tone="success" />
             <View style={styles.field}>
               <Text selectable={false} style={styles.label}>
                 제목
@@ -68,19 +71,19 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.color.graphite,
-    fontSize: 24,
-    lineHeight: 32,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
+    fontSize: 28,
+    lineHeight: 36,
   },
   subtitle: {
     color: theme.color.muted,
-    fontSize: 12,
+    fontSize: 13,
   },
   formCard: {
     gap: 18,
     padding: 18,
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
     ...shadow,
@@ -90,14 +93,14 @@ const styles = StyleSheet.create({
   },
   label: {
     color: theme.color.graphite,
-    fontSize: 13,
-    fontWeight: "700",
+    fontFamily: theme.font.displayBold,
+    fontSize: 15,
   },
   input: {
     minHeight: 46,
     paddingHorizontal: 12,
     borderRadius: theme.radius.sm,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paperSoft,
     color: theme.color.graphite,
