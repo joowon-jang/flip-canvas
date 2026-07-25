@@ -1,3 +1,4 @@
+import { theme } from "../theme";
 import type { FlipFrame, FlipProject, Stroke } from "../types/flipbook";
 import { normalizeFps } from "./fps";
 
@@ -20,7 +21,7 @@ function sanitizeStrokes(value: unknown): Stroke[] {
       ...stroke,
       id: stringOr((stroke as Partial<Stroke>).id, `stroke_${Date.now()}`),
       tool: (stroke as Partial<Stroke>).tool === "eraser" ? "eraser" : "pen",
-      color: stringOr((stroke as Partial<Stroke>).color, "#171717"),
+      color: stringOr((stroke as Partial<Stroke>).color, theme.color.graphite),
       baseWidth: numberOr((stroke as Partial<Stroke>).baseWidth, 4),
       points: Array.isArray((stroke as Partial<Stroke>).points) ? (stroke as Stroke).points : [],
       createdAt: numberOr((stroke as Partial<Stroke>).createdAt, Date.now()),

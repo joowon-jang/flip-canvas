@@ -111,8 +111,8 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.color.graphite,
-    fontSize: 13,
-    fontWeight: "700",
+    fontFamily: theme.font.displayBold,
+    fontSize: 16,
   },
   range: {
     color: theme.color.muted,
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: theme.radius.sm,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paperSoft,
   },
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: theme.radius.sm,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paperSoft,
   },

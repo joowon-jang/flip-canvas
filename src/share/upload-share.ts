@@ -1,6 +1,7 @@
 import { createShareManifest } from "./manifest";
 import { hexToRgba, rgbaToHex6 } from "../drawing/color";
 import { buildPressureStrokeSegments, buildStrokeDots } from "../drawing/pressure-stroke";
+import { theme } from "../theme";
 import type { FlipFrame, FlipProject, Stroke } from "../types/flipbook";
 
 type UploadPlanResponse = {
@@ -46,7 +47,7 @@ function svgOpacity(alpha: number): string {
 
 function svgStrokeColor(stroke: Stroke): { color: string; opacity: string } {
   if (stroke.tool === "eraser") {
-    return { color: "#FCF8EF", opacity: "1" };
+    return { color: theme.color.paper, opacity: "1" };
   }
 
   const rgba = hexToRgba(stroke.color);
@@ -57,9 +58,6 @@ function svgStrokeColor(stroke: Stroke): { color: string; opacity: string } {
 }
 
 function frameToSvg(frame: FlipFrame): string {
-  const rules = Array.from({ length: 13 }, (_, index) => 52 + index * 24)
-    .map((y) => `<path d="M30 ${y}H330" stroke="#DDE3E5" stroke-width="1"/>`)
-    .join("");
   const strokes = frame.strokes
     .flatMap((stroke) => {
       const strokeColor = svgStrokeColor(stroke);
@@ -81,7 +79,8 @@ function frameToSvg(frame: FlipFrame): string {
     })
     .join("");
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="720" viewBox="0 0 360 360"><rect width="360" height="360" fill="#FCF8EF"/><path d="M47 0V360" stroke="#E7B6AD"/>${rules}${strokes}<path d="M306 360L360 306V360Z" fill="#F6F0E6" stroke="#D8D0C0"/></svg>`;
+  // Paper Craft sheets are plain cream — no ruled lines, margin rule, or dog-ear.
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="720" viewBox="0 0 360 360"><rect width="360" height="360" fill="${theme.color.paper}"/>${strokes}</svg>`;
 }
 
 async function uploadFrameSvg(url: string, frame: FlipFrame): Promise<void> {

@@ -4,10 +4,11 @@ import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, StyleSheet, Tex
 
 import { AppSurface } from "../src/components/app-surface";
 import { Button } from "../src/components/button";
-import { NotebookPaper } from "../src/components/notebook-paper";
+import { MaskingTape, NotebookPaper } from "../src/components/notebook-paper";
 import { StrokePreview } from "../src/components/stroke-preview";
 import { useProject, useProjectActions, useProjectSummaries } from "../src/state/project-store";
-import { shadow, theme } from "../src/theme";
+import { shadow } from "../src/shadow";
+import { theme } from "../src/theme";
 import type { FlipFrame, ProjectSummary } from "../src/types/flipbook";
 
 const RECENT_PROJECT_LIMIT = 8;
@@ -50,7 +51,7 @@ export default function LibraryScreen() {
           </Text>
         </View>
 
-        <NotebookPaper style={[styles.heroPaper, { width: contentWidth, height: Math.min(208, contentWidth * 0.62), aspectRatio: undefined }]}>
+        <NotebookPaper tapeLeft="primary" tapeRight="success" style={[styles.heroPaper, { width: contentWidth, height: Math.min(208, contentWidth * 0.62), aspectRatio: undefined }]}>
           <View style={styles.heroContent}>
             <Text selectable={false} style={styles.heroTitle}>
               Corner{"\n"}drawings,{"\n"}made cinematic.
@@ -166,6 +167,7 @@ function ProjectManagementModal({
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.modalOverlay}>
         <View style={styles.managementPanel}>
+          <MaskingTape corner="left" tone="primary" />
           <View style={styles.managementHeader}>
             <Text selectable={false} style={styles.managementTitle}>
               프로젝트 관리
@@ -233,13 +235,13 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.color.graphite,
-    fontSize: 24,
-    lineHeight: 32,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
+    fontSize: 30,
+    lineHeight: 40,
   },
   subtitle: {
     color: theme.color.muted,
-    fontSize: 12,
+    fontSize: 13,
   },
   heroPaper: {
     backgroundColor: theme.color.paper,
@@ -250,9 +252,9 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     color: theme.color.graphite,
-    fontSize: 30,
-    lineHeight: 40,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
+    fontSize: 26,
+    lineHeight: 34,
   },
   heroCopy: {
     color: theme.color.graphiteSoft,
@@ -267,9 +269,9 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: theme.color.graphite,
-    fontSize: 16,
-    lineHeight: 22,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
+    fontSize: 17,
+    lineHeight: 23,
   },
   projectCard: {
     minHeight: 82,
@@ -278,7 +280,7 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: 12,
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
     ...shadow,
@@ -311,20 +313,20 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   progressTrack: {
-    width: 160,
-    height: 3,
+    width: 140,
+    height: 4,
     borderRadius: 2,
     backgroundColor: theme.color.progressTrack,
   },
   progressFill: {
-    height: 3,
+    height: 4,
     borderRadius: 2,
     backgroundColor: theme.color.deepBlue,
   },
   openLabel: {
     color: theme.color.deepBlue,
-    fontSize: 11,
-    fontWeight: "700",
+    fontFamily: theme.font.displayBold,
+    fontSize: 14,
   },
   manageButton: {
     minWidth: 58,
@@ -342,7 +344,7 @@ const styles = StyleSheet.create({
     gap: 18,
     padding: 18,
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
     ...shadow,
@@ -352,9 +354,9 @@ const styles = StyleSheet.create({
   },
   managementTitle: {
     color: theme.color.graphite,
-    fontSize: 20,
-    lineHeight: 28,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
+    fontSize: 22,
+    lineHeight: 30,
   },
   managementMeta: {
     color: theme.color.muted,
@@ -372,7 +374,7 @@ const styles = StyleSheet.create({
     minHeight: 46,
     paddingHorizontal: 12,
     borderRadius: theme.radius.sm,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paperSoft,
     color: theme.color.graphite,

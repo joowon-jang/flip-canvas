@@ -139,7 +139,7 @@ export function ToolOptionsPanel({
 const styles = StyleSheet.create({
   panel: {
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
     padding: 14,
@@ -150,8 +150,8 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.color.graphite,
-    fontSize: 14,
-    fontWeight: "800",
+    fontFamily: theme.font.displayBold,
+    fontSize: 16,
   },
   switchRow: {
     flexDirection: "row",
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     borderRadius: theme.radius.sm,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paperSoft,
   },

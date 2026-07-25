@@ -71,13 +71,13 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.color.graphite,
-    fontSize: 24,
-    lineHeight: 32,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
+    fontSize: 28,
+    lineHeight: 36,
   },
   subtitle: {
     color: theme.color.muted,
-    fontSize: 12,
+    fontSize: 13,
   },
   errorText: {
     color: theme.color.vermilion,

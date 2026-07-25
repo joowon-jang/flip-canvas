@@ -4,11 +4,13 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, View, useWindowDimensi
 
 import { Button } from "../../../src/components/button";
 import { FpsInput, type FpsValue } from "../../../src/components/fps-input";
+import { MaskingTape } from "../../../src/components/notebook-paper";
 import { ProjectLoadState } from "../../../src/components/project-load-state";
 import { ScreenHeader } from "../../../src/components/screen-header";
 import { goBackOrReplace } from "../../../src/navigation/go-back";
 import { uploadProjectShare } from "../../../src/share/upload-share";
 import { useProject, useProjectActions } from "../../../src/state/project-store";
+import { shadow } from "../../../src/shadow";
 import { theme } from "../../../src/theme";
 
 export default function RenderScreen() {
@@ -68,6 +70,7 @@ export default function RenderScreen() {
       </View>
 
       <View style={[styles.progressCard, { width: contentWidth }]}>
+        <MaskingTape corner="left" tone="success" />
         <View
           accessibilityRole="progressbar"
           accessibilityValue={{ min: 0, max: 100, now: Math.round(progress * 100) }}
@@ -113,21 +116,22 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.color.graphite,
-    fontSize: 24,
-    lineHeight: 32,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
+    fontSize: 28,
+    lineHeight: 36,
   },
   subtitle: {
     color: theme.color.muted,
-    fontSize: 12,
+    fontSize: 13,
   },
   fpsCard: {
     gap: 10,
     padding: 20,
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
+    ...shadow,
   },
   helperText: {
     color: theme.color.muted,
@@ -138,9 +142,10 @@ const styles = StyleSheet.create({
     gap: 18,
     padding: 20,
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
+    ...shadow,
   },
   progressTrack: {
     height: 6,

@@ -3,8 +3,10 @@ import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
 
 import { frameDurationMs } from "../model/fps";
-import { shadow, theme } from "../theme";
+import { shadow } from "../shadow";
+import { theme } from "../theme";
 import type { ShareManifest } from "../types/flipbook";
+import { MaskingTape } from "./notebook-paper";
 
 type FlipPlayerProps = {
   manifest: ShareManifest;
@@ -44,6 +46,8 @@ export function FlipPlayer({ manifest, size, autoPlay = true }: FlipPlayerProps)
       style={[styles.player, { width: size, height: size }]}
     >
       <Image source={{ uri: frame.url }} contentFit="cover" cachePolicy="memory-disk" style={[styles.frameImage, { width: size, height: size }]} />
+      <MaskingTape corner="left" tone="primary" />
+      <MaskingTape corner="right" tone="success" />
       <Text
         selectable={false}
         style={styles.counter}
@@ -65,7 +69,7 @@ const styles = StyleSheet.create({
   player: {
     overflow: "hidden",
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
     ...shadow,

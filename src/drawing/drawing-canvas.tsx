@@ -161,7 +161,7 @@ export function DrawingCanvas({
   );
 
   return (
-    <NotebookPaper fold={false} style={[styles.paper, { width: size, height: size }]}>
+    <NotebookPaper fold={false} tapeLeft="primary" style={[styles.paper, { width: size, height: size }]}>
       <StrokePreview strokes={renderedFrameStrokes} scale={scale} renderMode="pressure-lite" pointsPerPressureSegment={4} eraserRenderMode="paint" />
       {draft && draft.tool === "eraser" ? (
         <StrokePreview strokes={[draft]} scale={scale} renderMode="pressure-lite" pointsPerPressureSegment={4} eraserRenderMode="paint" cacheable={false} />

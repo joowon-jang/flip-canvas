@@ -5,6 +5,7 @@ import Svg, { Circle, Defs, G, Mask, Path, Rect } from "react-native-svg";
 import { CANONICAL_CANVAS_SIZE } from "../drawing/canvas-constants";
 import { buildPressureStrokeSegments, buildStrokeDots } from "../drawing/pressure-stroke";
 import { buildStrokePath } from "../drawing/stroke-path";
+import { theme } from "../theme";
 import type { Stroke } from "../types/flipbook";
 import { buildStrokeRenderLayers } from "./stroke-layering";
 
@@ -51,7 +52,7 @@ type StrokeRenderCommand =
 
 const committedStrokeRenderCache = new WeakMap<Stroke, Map<string, StrokeRenderCommand[]>>();
 const EMPTY_STROKES: Stroke[] = [];
-const PAPER_ERASER_COLOR = "#FCF8EF";
+const PAPER_ERASER_COLOR = theme.color.paper;
 
 function paintEraserColor(): string {
   return PAPER_ERASER_COLOR;
@@ -290,7 +291,7 @@ function PaintStrokePreview({
    | "opacity"
    | "renderMode"
    | "pointsPerPressureSegment"
-   | "cacheable",
+   | "cacheable"
 >) {
   const safeStrokes = Array.isArray(strokes) ? strokes : EMPTY_STROKES;
   const canvasSize = CANONICAL_CANVAS_SIZE * scale;

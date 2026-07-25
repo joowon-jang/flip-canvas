@@ -19,7 +19,7 @@ export function ScreenHeader({ title, subtitle, onBack, backLabel = "뒤로", ri
       <View style={[styles.headerRow, compact ? styles.headerRowCompact : null]}>
         <Pressable accessibilityRole="button" accessibilityLabel={backLabel} onPress={onBack} style={({ pressed }) => [styles.backButton, compact ? styles.backButtonCompact : null, pressed ? styles.pressed : null]}>
           <Text selectable={false} style={[styles.backIcon, compact ? styles.backIconCompact : null]}>
-            {"<"}
+            {"←"}
           </Text>
         </Pressable>
         <View style={styles.titleGroup}>
@@ -69,10 +69,11 @@ const styles = StyleSheet.create({
     opacity: 0.72,
   },
   backIcon: {
-    color: theme.color.deepBlue,
+    // Design: the back affordance is a quiet ink arrow, not a terracotta chevron.
+    // Terracotta is reserved for the primary action.
+    color: theme.color.graphiteSoft,
     fontSize: 20,
     lineHeight: 24,
-    fontWeight: "700",
   },
   backIconCompact: {
     fontSize: 18,
@@ -87,17 +88,18 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.color.graphite,
-    fontSize: 24,
-    lineHeight: 32,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
+    fontSize: 28,
+    lineHeight: 36,
   },
   titleCompact: {
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 22,
+    lineHeight: 28,
   },
   subtitle: {
     color: theme.color.muted,
-    fontSize: 12,
+    fontSize: 13,
+    lineHeight: 19,
   },
   subtitleCompact: {
     fontSize: 11,

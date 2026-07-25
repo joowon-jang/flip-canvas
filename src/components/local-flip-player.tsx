@@ -3,7 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { CANONICAL_CANVAS_SIZE } from "../drawing/canvas-constants";
 import { frameDurationMs } from "../model/fps";
-import { shadow, theme } from "../theme";
+import { shadow } from "../shadow";
+import { theme } from "../theme";
 import type { FlipFrame } from "../types/flipbook";
 import { NotebookPaper } from "./notebook-paper";
 import { StrokePreview } from "./stroke-preview";
@@ -46,7 +47,7 @@ export function LocalFlipPlayer({ frames, fps, size, autoPlay = true }: LocalFli
 
   return (
     <View style={[styles.player, { width: size, height: size }]}>
-      <NotebookPaper style={[styles.paper, { width: size, height: size }]}>
+      <NotebookPaper tapeLeft="primary" style={[styles.paper, { width: size, height: size }]}>
         <StrokePreview strokes={frame.strokes} scale={scale} renderMode="pressure-lite" pointsPerPressureSegment={4} eraserRenderMode="paint" />
       </NotebookPaper>
       <Text
