@@ -227,13 +227,13 @@ function renderPaintStrokeSvg(
     cacheStrokeRender(stroke, options, cacheable).forEach(
        (command, commandIndex) => {
         elements.push(
-           <g key={`stroke-${strokeIndex}-${commandIndex}`} opacity={opacity}>
+           <G key={`stroke-${strokeIndex}-${commandIndex}`} opacity={opacity}>
              {renderCommand(
               command,
               commandKey(stroke, commandIndex, `paint-stroke-${strokeIndex}`),
               color,
              )}
-           </g>,
+           </G>,
          );
        },
      );
