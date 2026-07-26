@@ -1,4 +1,43 @@
-const base = require("./app.json").expo;
+const base = {
+  name: "Flip Canvas",
+  slug: "flip-canvas",
+  version: "0.1.0",
+  icon: "./assets/images/icon.png",
+  orientation: "default",
+  scheme: "flipcanvas",
+  userInterfaceStyle: "light",
+  ios: {
+    supportsTablet: true,
+    bundleIdentifier: "com.joowon.flipcanvas",
+    infoPlist: {
+      UIRequiresFullScreen: false,
+    },
+  },
+  android: {
+    package: "com.joowon.flipcanvas",
+    adaptiveIcon: {
+      foregroundImage: "./assets/images/icon.png",
+      backgroundColor: "#F3EBDD",
+    },
+  },
+  web: {
+    bundler: "metro",
+    output: "server",
+  },
+  plugins: [
+    "expo-router",
+    "expo-dev-client",
+    "expo-sqlite",
+    "expo-font",
+    "expo-image",
+    "expo-sharing",
+    "react-native-google-mobile-ads",
+  ],
+  experiments: {
+    typedRoutes: true,
+    reactCompiler: true,
+  },
+};
 
 const TEST_ANDROID_ADMOB_APP_ID = "ca-app-pub-3940256099942544~3347511713";
 const TEST_IOS_ADMOB_APP_ID = "ca-app-pub-3940256099942544~1458002511";

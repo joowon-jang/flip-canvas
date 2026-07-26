@@ -6,7 +6,7 @@ function allowedAdUnits(): Set<string> {
   return new Set(
     (process.env.ADMOB_SSV_ALLOWED_AD_UNITS ?? "")
       .split(",")
-      .map((value) => value.trim())
+      .map((value: string) => value.trim())
       .filter(Boolean),
   );
 }

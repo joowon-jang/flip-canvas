@@ -113,6 +113,8 @@ https://<production-origin>/api/v1/admob/ssv
 
 개발/preview 빌드는 Google 테스트 앱 ID를 쓸 수 있지만, `beta`와 `production` 빌드는 실제 iOS/Android AdMob 앱 ID와 리워드 광고 단위 ID 네 개가 모두 없으면 app config 단계에서 실패합니다.
 
+`ios/`와 `android/`를 커밋하는 non-CNG 구조이므로 EAS Build는 Prebuild를 자동 실행하지 않습니다. 대신 `eas-build-post-install` 훅이 production 환경의 `ADMOB_IOS_APP_ID` 또는 `ADMOB_ANDROID_APP_ID`를 해당 네이티브 설정 파일에 반영한 뒤 빌드를 계속합니다.
+
 ## 7. 베타 빌드
 
 서버를 먼저 배포한 뒤 앱을 빌드합니다. `beta`는 EAS production 환경 변수를 명시적으로 사용하고 Android App Bundle과 iOS archive를 생성합니다.

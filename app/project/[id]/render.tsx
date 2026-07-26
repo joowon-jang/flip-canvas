@@ -1,7 +1,6 @@
 import VideoEncoderModule from "@modules/video-encoder";
 import { File, Paths } from "expo-file-system";
 import { Image } from "expo-image";
-import * as MediaLibrary from "expo-media-library";
 import { router, useLocalSearchParams } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { useRef, useState } from "react";
@@ -15,6 +14,7 @@ import { MaskingTape } from "../../../src/components/notebook-paper";
 import { ProjectLoadState } from "../../../src/components/project-load-state";
 import { ScreenHeader } from "../../../src/components/screen-header";
 import { goBackOrReplace } from "../../../src/navigation/go-back";
+import * as MediaLibrary from "../../../src/media-library";
 import { useProject, useProjectActions } from "../../../src/state/project-store";
 import { shadow } from "../../../src/shadow";
 import { resolveFrameAssetUri } from "../../../src/storage/frame-assets";

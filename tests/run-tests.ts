@@ -12,6 +12,7 @@ import "./drawing-canvas-static.test";
 import "./draw-layout.test";
 import "./web-storage-static.test";
 import "./expo-project-static.test";
+import "./store-admob-sync.test";
 import "./native-repository-static.test";
 import "./storage-records.test";
 import "./sanitize-project.test";

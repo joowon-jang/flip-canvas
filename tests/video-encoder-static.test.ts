@@ -30,6 +30,18 @@ describe("local media encoder contract", () => {
     equal(index.includes("VideoEncoderView"), false);
   });
 
+  it("keeps the web fallback safe to load during server export", () => {
+    const webModule = readFileSync(resolve("modules/video-encoder/src/VideoEncoderModule.web.ts"), "utf8");
+    const renderRoute = readFileSync(resolve("app/project/[id]/render.tsx"), "utf8");
+    const mediaLibraryWeb = readFileSync(resolve("src/media-library.web.ts"), "utf8");
+
+    equal(webModule.includes("NativeModule"), false);
+    equal(webModule.includes("registerWebModule"), false);
+    equal(webModule.includes("addListener"), true);
+    equal(renderRoute.includes('"expo-media-library"'), false);
+    equal(mediaLibraryWeb.includes('"expo-media-library"'), false);
+  });
+
   it("lets users choose MP4 or GIF and a supported square resolution", () => {
     const source = readFileSync(resolve("app/project/[id]/render.tsx"), "utf8");
 

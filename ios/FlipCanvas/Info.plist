@@ -55,6 +55,12 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSBonjourServices</key>
+    <array>
+      <string>_expo._tcp</string>
+    </array>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Expo Dev Launcher uses the local network to discover and connect to development servers running on your computer.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>완성한 플립북 영상을 사진 보관함에 저장합니다.</string>
     <key>NSPhotoLibraryUsageDescription</key>

@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Alert, InteractionManager, StyleSheet, Text, View, type LayoutChangeEvent, useWindowDimensions } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, Text, View, type LayoutChangeEvent, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppSurface } from "../../../src/components/app-surface";
@@ -87,7 +87,7 @@ export default function DrawScreen() {
       return;
     }
 
-    const interaction = InteractionManager.runAfterInteractions(() => {
+    const idleCallback = requestIdleCallback(() => {
       project.frames.forEach((item) => {
         prewarmStrokePreviewCache(item.strokes, {
           scale: canvasScale,
@@ -104,10 +104,10 @@ export default function DrawScreen() {
         });
       });
       setInitialRouteLoadingProjectId((current) => (current === id ? undefined : current));
-    });
+    }, { timeout: 500 });
 
     return () => {
-      interaction.cancel();
+      cancelIdleCallback(idleCallback);
     };
   }, [canvasScale, id, initialRouteLoadingProjectId, onionOpacity, project]);
 

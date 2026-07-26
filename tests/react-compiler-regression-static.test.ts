@@ -27,10 +27,10 @@ describe("react compiler regression contract", () => {
   });
 
   it("keeps React Compiler enabled in Expo config", () => {
-    const app = JSON.parse(readFileSync(resolve("app.json"), "utf8")) as {
-      expo?: { experiments?: { reactCompiler?: boolean } };
+    const app = require(resolve("app.config.js")) as {
+      experiments?: { reactCompiler?: boolean };
     };
 
-    equal(app.expo?.experiments?.reactCompiler, true);
+    equal(app.experiments?.reactCompiler, true);
   });
 });

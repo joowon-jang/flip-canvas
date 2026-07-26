@@ -1,6 +1,7 @@
 import { router } from "expo-router";
+import Head from "expo-router/head";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
+import { ActivityIndicator, Alert, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 
 import { AppSurface } from "../src/components/app-surface";
 import { Button } from "../src/components/button";
@@ -41,6 +42,11 @@ export default function LibraryScreen() {
 
   return (
     <AppSurface>
+      {Platform.OS === "web" ? (
+        <Head>
+          <title>Flip Canvas</title>
+        </Head>
+      ) : null}
       <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.scrollContent}>
         <View style={[styles.header, { width: contentWidth }]}>
           <Text selectable={false} style={styles.title}>

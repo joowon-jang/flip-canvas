@@ -8,23 +8,21 @@ type PackageJson = {
   name?: string;
 };
 
-type AppJson = {
-  expo?: {
-    name?: string;
-    slug?: string;
-    scheme?: string;
-    ios?: {
-      bundleIdentifier?: string;
-    };
-    android?: {
-      package?: string;
-    };
+type AppConfig = {
+  name?: string;
+  slug?: string;
+  scheme?: string;
+  ios?: {
+    bundleIdentifier?: string;
+  };
+  android?: {
+    package?: string;
   };
 };
 
 describe("app branding", () => {
   it("uses Flip Canvas as the app brand while keeping FlipBook for project units", () => {
-    const app = JSON.parse(readFileSync(resolve("app.json"), "utf8")) as AppJson;
+    const app = require(resolve("app.config.js")) as AppConfig;
     const pkg = JSON.parse(readFileSync(resolve("package.json"), "utf8")) as PackageJson;
     const readme = readFileSync(resolve("README.md"), "utf8");
     const library = readFileSync(resolve("app/index.tsx"), "utf8");
@@ -36,11 +34,11 @@ describe("app branding", () => {
     const nativeStrings = readFileSync(resolve("android/app/src/main/res/values/strings.xml"), "utf8");
     const podspec = readFileSync(resolve("modules/stylus-input/ios/StylusInput.podspec"), "utf8");
 
-    equal(app.expo?.name, "Flip Canvas");
-    equal(app.expo?.slug, "flip-canvas");
-    equal(app.expo?.scheme, "flipcanvas");
-    equal(app.expo?.ios?.bundleIdentifier, "com.joowon.flipcanvas");
-    equal(app.expo?.android?.package, "com.joowon.flipcanvas");
+    equal(app.name, "Flip Canvas");
+    equal(app.slug, "flip-canvas");
+    equal(app.scheme, "flipcanvas");
+    equal(app.ios?.bundleIdentifier, "com.joowon.flipcanvas");
+    equal(app.android?.package, "com.joowon.flipcanvas");
     equal(pkg.name, "flip-canvas");
     equal(readme.startsWith("# Flip Canvas"), true);
     equal(library.includes("Flip Canvas"), true);
@@ -54,5 +52,7 @@ describe("app branding", () => {
     equal(androidManifest.includes('android:scheme="exp+flipcanvas"'), true);
     equal(podspec.includes("Flip Canvas"), true);
     equal(library.includes('title="새 플립북"'), true);
+    equal(library.includes('Platform.OS === "web"'), true);
+    equal(library.includes("<title>Flip Canvas</title>"), true);
   });
 });

@@ -97,9 +97,10 @@ describe("draw route layout contract", () => {
   it("shows a route-local loading state before rendering cached heavy drawing content", () => {
     const source = readFileSync(resolve("app/project/[id]/draw.tsx"), "utf8");
 
-    equal(source.includes("InteractionManager"), true);
+    equal(source.includes("InteractionManager"), false);
     equal(source.includes("initialRouteLoadingProjectId"), true);
-    equal(source.includes("InteractionManager.runAfterInteractions"), true);
+    equal(source.includes("requestIdleCallback"), true);
+    equal(source.includes("cancelIdleCallback"), true);
     equal(source.includes("if (!ready || initialRouteLoadingProjectId === id)"), true);
   });
 

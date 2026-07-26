@@ -374,7 +374,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   panelBackdrop: {
-    ...StyleSheet.absoluteFillObject,
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     backgroundColor: "transparent",
   },
   optionsPanel: {

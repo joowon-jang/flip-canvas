@@ -10,7 +10,12 @@
     ]
   },
   "include": [
+    "app/**/*.ts",
     "src/**/*.ts",
     "tests/**/*.ts"
+  ],
+  "exclude": [
+    ".test-build",
+    "node_modules"
   ]
 }
