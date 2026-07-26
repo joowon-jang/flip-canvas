@@ -173,7 +173,11 @@ export default function InterpolateScreen() {
 
   if (!selectedPair) {
     return (
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+      >
         <ScreenHeader
           title="AI 중간 프레임"
           subtitle="인접한 프레임 두 장이 필요합니다."
@@ -188,7 +192,11 @@ export default function InterpolateScreen() {
   }
 
   return (
-    <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.scroll}
+      contentContainerStyle={styles.scrollContent}
+    >
       <ScreenHeader
         title="AI 중간 프레임"
         subtitle="RIFE CNN · 광고 리워드"
