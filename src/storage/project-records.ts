@@ -7,14 +7,14 @@ export type ProjectRecord = {
   fps: number;
   createdAt: number;
   updatedAt: number;
+  shareId?: string;
+  shareUrl?: string;
 };
 
 export type FrameRecord = {
   id: string;
   projectId: string;
   index: number;
-  backgroundAssetPath?: string;
-  backgroundMetadataJson?: string;
   thumbnailUri?: string;
   updatedAt: number;
 };
@@ -45,13 +45,13 @@ export function projectToStorageRecords(project: FlipProject): ProjectStorageRec
       fps: sanitized.fps,
       createdAt: sanitized.createdAt,
       updatedAt: sanitized.updatedAt,
+      shareId: sanitized.shareId,
+      shareUrl: sanitized.shareUrl,
     },
     frames: sanitized.frames.map((frame) => ({
       id: frame.id,
       projectId: sanitized.id,
       index: frame.index,
-      backgroundAssetPath: frame.background?.assetPath,
-      backgroundMetadataJson: frame.background ? JSON.stringify(frame.background) : undefined,
       thumbnailUri: frame.thumbnailUri,
       updatedAt: frame.updatedAt,
     })),
@@ -85,6 +85,8 @@ export function projectFromStorageRecords(project: ProjectRecord, frames: FrameR
     fps: project.fps,
     createdAt: project.createdAt,
     updatedAt: project.updatedAt,
+    shareId: project.shareId,
+    shareUrl: project.shareUrl,
     frames: framesByIndex.map<FlipFrame>((frame, index) => {
       const restored: FlipFrame = {
         id: frame.id,
@@ -104,16 +106,6 @@ export function projectFromStorageRecords(project: ProjectRecord, frames: FrameR
       if (frame.thumbnailUri) {
         restored.thumbnailUri = frame.thumbnailUri;
       }
-      if (frame.backgroundAssetPath && frame.backgroundMetadataJson) {
-        try {
-          restored.background = {
-            ...JSON.parse(frame.backgroundMetadataJson),
-            assetPath: frame.backgroundAssetPath,
-          };
-        } catch {
-          // Ignore malformed background metadata and keep the editable stroke frame.
-        }
-      }
       return restored;
     }),
   });
@@ -127,6 +119,8 @@ export function projectSummaryFromRecords(project: ProjectRecord, frameCount: nu
     frameCount,
     createdAt: project.createdAt,
     updatedAt: project.updatedAt,
+    shareId: project.shareId,
+    shareUrl: project.shareUrl,
   };
   if (previewFrame) {
     summary.previewFrame = previewFrame;

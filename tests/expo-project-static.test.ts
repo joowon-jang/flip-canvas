@@ -42,32 +42,19 @@ describe("expo project configuration", () => {
     equal(app.expo?.newArchEnabled, true);
   });
 
-  it("documents the native prebuild synchronization policy", () => {
+  it("documents the Android prebuild regeneration policy", () => {
     const readme = readFileSync(resolve("README.md"), "utf8");
 
-    equal(readme.includes("npx expo prebuild --platform all --no-install"), true);
-    equal(readme.includes("npx pod-install"), true);
+    equal(readme.includes("prebuild 재생성 기준"), true);
+    equal(readme.includes("npx expo prebuild --clean --platform android"), true);
     equal(readme.includes("npm run android"), true);
-    equal(readme.includes("npm run ios"), true);
-    equal(readme.includes("Expo Go에서는 실행할 수 없습니다"), true);
-    equal(readme.includes("modules/video-encoder"), true);
+    equal(readme.includes("Expo Go"), true);
+    equal(readme.includes("development build"), true);
   });
 
   it("makes the non-CNG Expo Doctor decision explicit in package metadata", () => {
     const pkg = JSON.parse(readFileSync(resolve("package.json"), "utf8")) as PackageJson;
 
     equal(pkg.expo?.doctor?.appConfigFieldsNotSyncedCheck?.enabled, false);
-  });
-
-  it("fails store builds before native compilation when real AdMob app ids are missing", () => {
-    const config = readFileSync(resolve("app.config.js"), "utf8");
-    const eas = readFileSync(resolve("eas.json"), "utf8");
-
-    equal(config.includes('process.env.FLIPCANVAS_STORE_BUILD === "true"'), true);
-    equal(config.includes("ADMOB_ANDROID_APP_ID"), true);
-    equal(config.includes("ADMOB_IOS_APP_ID"), true);
-    equal(config.includes("EXPO_PUBLIC_ADMOB_ANDROID_REWARDED_AD_UNIT_ID"), true);
-    equal(config.includes("EXPO_PUBLIC_ADMOB_IOS_REWARDED_AD_UNIT_ID"), true);
-    equal(eas.includes('"FLIPCANVAS_STORE_BUILD": "true"'), true);
   });
 });

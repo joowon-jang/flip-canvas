@@ -11,20 +11,10 @@ export type Stroke = {
   createdAt: number;
 };
 
-export type FrameBackground = {
-  assetPath: string;
-  source: "rife";
-  model: "fal-ai/rife";
-  sourceFrameIds: [string, string];
-  time: number;
-  generatedAt: number;
-};
-
 export type FlipFrame = {
   id: string;
   index: number;
   strokes: Stroke[];
-  background?: FrameBackground;
   thumbnailUri?: string;
   updatedAt: number;
 };
@@ -36,6 +26,8 @@ export type FlipProject = {
   frames: FlipFrame[];
   createdAt: number;
   updatedAt: number;
+  shareId?: string;
+  shareUrl?: string;
 };
 
 export type ProjectSummary = {
@@ -46,4 +38,20 @@ export type ProjectSummary = {
   previewFrame?: FlipFrame;
   createdAt: number;
   updatedAt: number;
+  shareId?: string;
+  shareUrl?: string;
+};
+
+export type ShareManifestFrame = {
+  index: number;
+  url: string;
+};
+
+export type ShareManifest = {
+  id: string;
+  title: string;
+  fps: number;
+  frameCount: number;
+  createdAt: number;
+  frames: ShareManifestFrame[];
 };

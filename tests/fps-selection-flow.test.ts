@@ -37,6 +37,8 @@ describe("fps selection flow", () => {
       "app/project/new/index.tsx",
       "app/project/[id]/draw.tsx",
       "app/project/[id]/frames.tsx",
+      "app/project/[id]/share.tsx",
+      "app/v/[shareId]/index.tsx",
     ];
 
     for (const path of screensWithoutFpsUi) {
@@ -53,10 +55,11 @@ describe("fps selection flow", () => {
     equal(source.includes("LocalFlipPlayer frames={project.frames} fps={fps}"), true);
   });
 
-  it("uses the render screen FPS when creating the local video", () => {
+  it("uses the render screen FPS when uploading the share manifest", () => {
     const source = readFileSync(resolve("app/project/[id]/render.tsx"), "utf8");
 
     equal(source.includes("FpsInput"), true);
-    equal(source.includes("fps"), true);
+    equal(source.includes("const projectForUpload = { ...activeProject, fps }"), true);
+    equal(source.includes("uploadProjectShare(projectForUpload"), true);
   });
 });

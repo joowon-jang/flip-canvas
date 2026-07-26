@@ -4,7 +4,6 @@ import { StyleSheet } from "react-native";
 import { StylusInputView, type NativeStylusBatchEvent, type StylusPoint } from "@modules/stylus-input";
 import { theme } from "../theme";
 import type { FlipFrame, Stroke } from "../types/flipbook";
-import { FrameBackgroundLayer } from "../components/frame-composite";
 import { NotebookPaper } from "../components/notebook-paper";
 import { StrokePreview } from "../components/stroke-preview";
 import { CANONICAL_CANVAS_SIZE } from "./canvas-constants";
@@ -163,30 +162,12 @@ export function DrawingCanvas({
 
   return (
     <NotebookPaper fold={false} style={[styles.paper, { width: size, height: size }]}>
-      {frame.background ? <FrameBackgroundLayer assetPath={frame.background.assetPath} size={size} /> : null}
-      <StrokePreview
-        strokes={renderedFrameStrokes}
-        scale={scale}
-        renderMode="pressure-lite"
-        pointsPerPressureSegment={4}
-        eraserRenderMode={frame.background ? "mask" : "paint"}
-        maskStrokes={frame.background && draft?.tool === "eraser" ? [draft] : undefined}
-      />
-      {draft && draft.tool === "eraser" && !frame.background ? (
+      <StrokePreview strokes={renderedFrameStrokes} scale={scale} renderMode="pressure-lite" pointsPerPressureSegment={4} eraserRenderMode="paint" />
+      {draft && draft.tool === "eraser" ? (
         <StrokePreview strokes={[draft]} scale={scale} renderMode="pressure-lite" pointsPerPressureSegment={4} eraserRenderMode="paint" cacheable={false} />
       ) : null}
       {onionEnabled && onionFrame ? (
-        <>
-          {onionFrame.background ? <FrameBackgroundLayer assetPath={onionFrame.background.assetPath} size={size} opacity={onionOpacity} /> : null}
-          <StrokePreview
-            strokes={onionFrame.strokes}
-            scale={scale}
-            opacity={onionOpacity}
-            renderMode="pressure-lite"
-            pointsPerPressureSegment={4}
-            eraserRenderMode={onionFrame.background ? "mask" : "paint"}
-          />
-        </>
+        <StrokePreview strokes={onionFrame.strokes} scale={scale} opacity={onionOpacity} renderMode="pressure-lite" pointsPerPressureSegment={4} eraserRenderMode="paint" />
       ) : null}
       {draft && draft.tool !== "eraser" ? (
         <StrokePreview strokes={[draft]} scale={scale} renderMode="pressure-lite" pointsPerPressureSegment={4} cacheable={false} />

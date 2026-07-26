@@ -172,7 +172,7 @@ Flip Canvas는 조용한 노트/종이 톤의 플립북 드로잉 앱이다. 화
 
 ## Layout
 
-기본 화면은 `AppSurface` 위에 세워진다. 배경은 Linen이고, 스크롤 화면은 `23px` page padding과 가운데 정렬된 고정 최대 너비 컨텐츠를 사용한다. 현재 주요 최대 너비는 라이브러리 720px, 새 프로젝트/렌더 520px, 프레임 관리 680px, 미리보기/AI 보간 720~760px이다.
+기본 화면은 `AppSurface` 위에 세워진다. 배경은 Linen이고, 스크롤 화면은 `23px` page padding과 가운데 정렬된 고정 최대 너비 컨텐츠를 사용한다. 현재 주요 최대 너비는 라이브러리 720px, 새 프로젝트/렌더/공유 520px, 프레임 관리 680px, 미리보기/웹 플레이어 760px이다.
 
 드로잉 화면은 예외적으로 무스크롤 작업대다. `getDrawStudioLayout`의 단일 adaptive layout 결과를 사용하고, 세로 모드에서는 캔버스, 프레임 스트립, 도구 독, 하단 액션이 위에서 아래로 쌓인다. 가로 모드에서는 도구 레일, 정사각형 캔버스, 프레임 패널을 하나의 그룹으로 가운데 정렬한다.
 
@@ -198,7 +198,7 @@ Flip Canvas는 조용한 노트/종이 톤의 플립북 드로잉 앱이다. 화
 
 **Button:** `primary`, `secondary`, `dark` 세 변형만 사용한다. Primary는 화면의 다음 주요 행동에, Secondary는 보조 행동에, Dark는 삭제처럼 강한 보조 행동에 사용한다. Regular는 46px 이상, compact는 34px 이상이어야 한다.
 
-**NotebookPaper:** 캔버스, 히어로, 프로젝트 썸네일의 종이 표면이다. 앱 내부 드로잉 종이는 plain paper여야 한다. 줄무늬나 margin line은 지우개 stroke와 충돌하므로 캔버스에 넣지 않는다.
+**NotebookPaper:** 캔버스, 히어로, 프로젝트 썸네일의 종이 표면이다. 앱 내부 드로잉 종이는 plain paper여야 한다. 줄무늬나 margin line은 지우개 stroke와 충돌하므로 앱 캔버스에 넣지 않고, 공유 SVG 산출물 내부에서만 사용한다.
 
 **DrawingCanvas:** 정사각형이어야 하며 기본 펜 색은 Graphite다. 어니언 스킨 기본 opacity는 24%이고, 이전 프레임은 현재 stroke보다 보조적으로 보여야 한다.
 
@@ -208,11 +208,7 @@ Flip Canvas는 조용한 노트/종이 톤의 플립북 드로잉 앱이다. 화
 
 **Form Controls:** TextInput, FPS input, slider, color picker는 Paper Soft 배경과 Hairline 경계를 따른다. 수치 입력은 tabular nums를 사용하고, 직접 조작 가능한 영역은 44px 이상 터치 타깃을 유지한다.
 
-**Player and Preview:** 로컬 미리보기, 썸네일, 영상 캡처는 모두 `FrameComposite`를 사용해 생성 배경과 벡터 스트로크의 합성 순서를 동일하게 유지한다. 카운터는 우상단 작은 muted tabular label로 통일한다.
-
-**AI Interpolation:** 인접 구간, 생성 장수, 광고 리워드라는 세 가지 선택만 노출한다. 생성 결과는 한 배치로 미리보고 전체 적용 또는 전체 취소만 제공한다. RIFE가 만든 래스터는 고정 배경이며 그 위에 추가한 스트로크만 편집 가능하다는 점을 명시한다.
-
-**Local Export:** 영상 화면은 MP4/GIF 형식과 480/720/1080 정사각 해상도 선택을 제공하고 현재 설정이 로컬에서 처리됨을 보여준다. 결과가 준비된 뒤 `기기에 저장`과 `즉시 공유`를 동등한 최종 행동으로 제공한다. 업로드나 공개 링크 상태는 표시하지 않는다.
+**Player and Preview:** 로컬 미리보기는 `NotebookPaper`와 `StrokePreview`를 사용하고, 공유 웹 플레이어는 원격 이미지를 Paper 표면 안에 표시한다. 카운터는 우상단 작은 muted tabular label로 통일한다.
 
 ## Do's and Don'ts
 

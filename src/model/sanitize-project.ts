@@ -1,4 +1,4 @@
-import type { FlipFrame, FlipProject, FrameBackground, Stroke } from "../types/flipbook";
+import type { FlipFrame, FlipProject, Stroke } from "../types/flipbook";
 import { normalizeFps } from "./fps";
 
 function numberOr(value: unknown, fallback: number): number {
@@ -27,38 +27,6 @@ function sanitizeStrokes(value: unknown): Stroke[] {
     }));
 }
 
-function sanitizeBackground(value: unknown): FrameBackground | undefined {
-  if (!value || typeof value !== "object") {
-    return undefined;
-  }
-
-  const source = value as Partial<FrameBackground>;
-  if (
-    typeof source.assetPath !== "string" ||
-    source.assetPath.length === 0 ||
-    source.source !== "rife" ||
-    source.model !== "fal-ai/rife" ||
-    !Array.isArray(source.sourceFrameIds) ||
-    source.sourceFrameIds.length !== 2 ||
-    source.sourceFrameIds.some((id) => typeof id !== "string") ||
-    typeof source.time !== "number" ||
-    !Number.isFinite(source.time) ||
-    typeof source.generatedAt !== "number" ||
-    !Number.isFinite(source.generatedAt)
-  ) {
-    return undefined;
-  }
-
-  return {
-    assetPath: source.assetPath,
-    source: "rife",
-    model: "fal-ai/rife",
-    sourceFrameIds: [source.sourceFrameIds[0], source.sourceFrameIds[1]],
-    time: Math.max(0, Math.min(1, source.time)),
-    generatedAt: source.generatedAt,
-  };
-}
-
 function sanitizeFrames(value: unknown, updatedAt: number): FlipFrame[] {
   if (!Array.isArray(value) || value.length === 0) {
     return [
@@ -83,10 +51,6 @@ function sanitizeFrames(value: unknown, updatedAt: number): FlipFrame[] {
       if (typeof frame.thumbnailUri === "string") {
         sanitized.thumbnailUri = frame.thumbnailUri;
       }
-      const background = sanitizeBackground(frame.background);
-      if (background) {
-        sanitized.background = background;
-      }
       return sanitized;
     });
 }
@@ -102,5 +66,7 @@ export function sanitizeProject(value: unknown): FlipProject {
     frames: sanitizeFrames(source.frames, updatedAt),
     createdAt: numberOr(source.createdAt, updatedAt),
     updatedAt,
+    shareId: typeof source.shareId === "string" ? source.shareId : undefined,
+    shareUrl: typeof source.shareUrl === "string" ? source.shareUrl : undefined,
   };
 }

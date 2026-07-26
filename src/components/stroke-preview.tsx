@@ -226,13 +226,13 @@ function renderPaintStrokeSvg(
     cacheStrokeRender(stroke, options, cacheable).forEach(
        (command, commandIndex) => {
         elements.push(
-           <G key={`stroke-${strokeIndex}-${commandIndex}`} opacity={opacity}>
+           <g key={`stroke-${strokeIndex}-${commandIndex}`} opacity={opacity}>
              {renderCommand(
               command,
               commandKey(stroke, commandIndex, `paint-stroke-${strokeIndex}`),
               color,
              )}
-           </G>,
+           </g>,
          );
        },
      );
@@ -290,7 +290,7 @@ function PaintStrokePreview({
    | "opacity"
    | "renderMode"
    | "pointsPerPressureSegment"
-   | "cacheable"
+   | "cacheable",
 >) {
   const safeStrokes = Array.isArray(strokes) ? strokes : EMPTY_STROKES;
   const canvasSize = CANONICAL_CANVAS_SIZE * scale;

@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+import { CANONICAL_CANVAS_SIZE } from "../drawing/canvas-constants";
 import { frameDurationMs } from "../model/fps";
 import { shadow, theme } from "../theme";
 import type { FlipFrame } from "../types/flipbook";
-import { FrameComposite } from "./frame-composite";
+import { NotebookPaper } from "./notebook-paper";
+import { StrokePreview } from "./stroke-preview";
 
 type LocalFlipPlayerProps = {
   frames: FlipFrame[];
@@ -16,6 +18,7 @@ type LocalFlipPlayerProps = {
 export function LocalFlipPlayer({ frames, fps, size, autoPlay = true }: LocalFlipPlayerProps) {
   const safeFrames = useMemo(() => frames.filter(Boolean).sort((left, right) => left.index - right.index), [frames]);
   const [index, setIndex] = useState(0);
+  const scale = size / CANONICAL_CANVAS_SIZE;
   const frame = safeFrames[index] ?? safeFrames[0];
   const frameDuration = frameDurationMs(fps);
 
@@ -43,7 +46,9 @@ export function LocalFlipPlayer({ frames, fps, size, autoPlay = true }: LocalFli
 
   return (
     <View style={[styles.player, { width: size, height: size }]}>
-      <FrameComposite frame={frame} size={size} style={styles.paper} />
+      <NotebookPaper style={[styles.paper, { width: size, height: size }]}>
+        <StrokePreview strokes={frame.strokes} scale={scale} renderMode="pressure-lite" pointsPerPressureSegment={4} eraserRenderMode="paint" />
+      </NotebookPaper>
       <Text
         selectable={false}
         style={styles.counter}

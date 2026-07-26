@@ -6,7 +6,7 @@ public final class StylusInputView: ExpoView {
   var isInputEnabled = true
   private var activeStrokeId = UUID().uuidString
 
-  public required init(appContext: AppContext? = nil) {
+  public override init(appContext: AppContext? = nil) {
     super.init(appContext: appContext)
     isMultipleTouchEnabled = false
     backgroundColor = .clear

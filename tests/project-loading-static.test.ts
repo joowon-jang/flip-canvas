@@ -8,6 +8,7 @@ const projectScreens = [
   "app/project/[id]/preview.tsx",
   "app/project/[id]/render.tsx",
   "app/project/[id]/frames.tsx",
+  "app/project/[id]/share.tsx",
 ];
 
 describe("project loading state contract", () => {
@@ -19,5 +20,13 @@ describe("project loading state contract", () => {
       ok(source.includes("ready"), path);
       equal(source.includes("if (!project) {\n    return null;\n  }"), false, path);
     }
+  });
+
+  it("disables unavailable share actions and offers render navigation", () => {
+    const source = readFileSync(resolve("app/project/[id]/share.tsx"), "utf8");
+
+    ok(source.includes("disabled={!url}"));
+    ok(source.includes("disabled={!project.shareId}"));
+    ok(source.includes("영상 만들기"));
   });
 });

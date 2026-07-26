@@ -32,7 +32,7 @@ describe("drawing controls accessibility contract", () => {
     ok(source.includes("선택됨"));
   });
 
-  it("exposes local render progress as a progressbar", () => {
+  it("exposes render upload progress as a progressbar", () => {
     const source = readFileSync(resolve("app/project/[id]/render.tsx"), "utf8");
 
     ok(source.includes('accessibilityRole="progressbar"'));

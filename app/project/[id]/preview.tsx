@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams, type Href } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 
 import { Button } from "../../../src/components/button";
@@ -49,12 +49,6 @@ export default function PreviewScreen() {
       </View>
 
       <View style={[styles.actions, { width: contentWidth }]}>
-        <Button
-          title="AI 중간 프레임"
-          disabled={project.frames.length < 2}
-          onPress={() => router.push(`/project/${project.id}/interpolate` as Href)}
-          style={styles.actionButton}
-        />
         <Button title="영상 만들기" variant="primary" onPress={() => router.push(`/project/${project.id}/render`)} style={styles.actionButton} />
       </View>
     </ScrollView>

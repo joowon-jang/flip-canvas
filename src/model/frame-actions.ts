@@ -12,12 +12,6 @@ function cloneFrame(frame: FlipFrame, id: string, updatedAt: number): FlipFrame 
     ...frame,
     id,
     updatedAt,
-    background: frame.background
-      ? {
-          ...frame.background,
-          sourceFrameIds: [...frame.background.sourceFrameIds],
-        }
-      : undefined,
     thumbnailUri: frame.thumbnailUri,
     strokes: frame.strokes.map((stroke) => ({
       ...stroke,
