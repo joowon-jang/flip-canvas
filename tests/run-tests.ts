@@ -1,7 +1,11 @@
 import "./frame-actions.test";
+import "./interpolation.test";
+import "./interpolation-request.test";
+import "./reward-state.test";
+import "./admob-ssv.test";
+import "./video-encoder-static.test";
+import "./frame-composite-static.test";
 import "./frame-reorder.test";
-import "./manifest.test";
-import "./r2-presign.test";
 import "./branding-static.test";
 import "./draw-route-static.test";
 import "./drawing-canvas-static.test";
@@ -28,9 +32,6 @@ import "./project-styles-static.test";
 import "./frame-strip-metrics.test";
 import "./button-static.test";
 import "./notebook-paper-static.test";
-import "./upload-share-static.test";
-import "./share-api-guard.test";
-import "./share-rate-limit.test";
 import "./env-example-static.test";
 import "./large-project-regression.test";
 import "./frame-strip-responsive-regression.test";
@@ -46,6 +47,7 @@ import "./session-history.test";
 import "./stylus-native-static.test";
 import "./project-management.test";
 import "./mobile-convenience-static.test";
+import "./privacy-route-static.test";
 
 import { runTests } from "./harness";
 

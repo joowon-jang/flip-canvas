@@ -5,24 +5,21 @@ import { resolve } from "node:path";
 import { describe, it } from "./harness";
 
 describe("environment example contract", () => {
-  it("documents every env required by sharing, R2, and production rate limiting", () => {
+  it("documents every env required by rewarded interpolation", () => {
     const env = readFileSync(resolve(".env.example"), "utf8");
 
     for (const key of [
-      "R2_ACCOUNT_ID",
-      "R2_BUCKET",
-      "R2_ACCESS_KEY_ID",
-      "R2_SECRET_ACCESS_KEY",
-      "R2_PUBLIC_BASE_URL",
-      "APP_PUBLIC_BASE_URL",
-      "EXPO_PUBLIC_APP_PUBLIC_BASE_URL",
-      "SHARE_ALLOWED_ORIGINS",
-      "SHARE_MAX_BODY_BYTES=2048",
-      "SHARE_RATE_LIMIT_PROVIDER=upstash",
-      "SHARE_RATE_LIMIT_MAX=30",
-      "SHARE_RATE_LIMIT_WINDOW_SECONDS=60",
+      "FAL_KEY",
       "UPSTASH_REDIS_REST_URL",
       "UPSTASH_REDIS_REST_TOKEN",
+      "ADMOB_SSV_ALLOWED_AD_UNITS",
+      "PRIVACY_CONTACT_EMAIL",
+      "AI_DAILY_CLIENT_LIMIT=20",
+      "AI_DAILY_GLOBAL_LIMIT=100",
+      "AI_MAX_IMAGE_BYTES=1048576",
+      "EXPO_PUBLIC_API_BASE_URL",
+      "EXPO_PUBLIC_ADMOB_IOS_REWARDED_AD_UNIT_ID",
+      "EXPO_PUBLIC_ADMOB_ANDROID_REWARDED_AD_UNIT_ID",
     ]) {
       equal(env.includes(key), true, `${key} should be present`);
     }

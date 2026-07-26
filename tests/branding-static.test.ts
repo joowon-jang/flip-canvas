@@ -28,7 +28,6 @@ describe("app branding", () => {
     const pkg = JSON.parse(readFileSync(resolve("package.json"), "utf8")) as PackageJson;
     const readme = readFileSync(resolve("README.md"), "utf8");
     const library = readFileSync(resolve("app/index.tsx"), "utf8");
-    const player = readFileSync(resolve("app/v/[shareId]/index.tsx"), "utf8");
     const androidBuild = readFileSync(resolve("android/app/build.gradle"), "utf8");
     const mainActivity = readFileSync(resolve("android/app/src/main/java/com/joowon/flipcanvas/MainActivity.kt"), "utf8");
     const mainApplication = readFileSync(resolve("android/app/src/main/java/com/joowon/flipcanvas/MainApplication.kt"), "utf8");
@@ -45,13 +44,12 @@ describe("app branding", () => {
     equal(pkg.name, "flip-canvas");
     equal(readme.startsWith("# Flip Canvas"), true);
     equal(library.includes("Flip Canvas"), true);
-    equal(player.includes('"Flip Canvas"'), true);
     equal(nativeStrings.includes("<string name=\"app_name\">Flip Canvas</string>"), true);
     equal(androidBuild.includes("namespace 'com.joowon.flipcanvas'"), true);
     equal(androidBuild.includes("applicationId 'com.joowon.flipcanvas'"), true);
     equal(mainActivity.includes("package com.joowon.flipcanvas"), true);
     equal(mainApplication.includes("package com.joowon.flipcanvas"), true);
-    equal(androidSettings.includes("rootProject.name = 'FlipCanvas'"), true);
+    equal(androidSettings.includes("rootProject.name = 'Flip Canvas'"), true);
     equal(androidManifest.includes('android:scheme="flipcanvas"'), true);
     equal(androidManifest.includes('android:scheme="exp+flipcanvas"'), true);
     equal(podspec.includes("Flip Canvas"), true);

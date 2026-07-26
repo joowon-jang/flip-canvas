@@ -1,81 +1,73 @@
 # Flip Canvas
 
-Expo SDK 54 기반 Flip Canvas 앱입니다. Figma v2 디자인의 조용한 노트/종이 톤을 기준으로 라이브러리, 프로젝트 생성, 무스크롤 드로잉, 프레임 관리, 미리보기, 업로드, 공유 링크, 웹 플레이어를 구현했습니다.
+Expo SDK 54 기반의 로컬 우선 플립북 앱입니다. 그림과 프로젝트는 사용자 기기에 저장하고, 해상도를 선택한 무음 H.264 MP4 또는 애니메이션 GIF를 기기에서 직접 만들어 사진 보관함에 저장하거나 공유 시트로 즉시 보냅니다.
+
+선택 기능인 **AI 중간 프레임**은 인접한 두 프레임 사이에 1~3장의 장면을 RIFE CNN으로 보간합니다. 광고 한 번으로 선택한 한 구간을 생성하며, 서버는 AdMob 보상 검증과 fal.ai 요청 중계만 담당합니다. 프로젝트와 완성 영상은 서버에 저장하지 않습니다.
 
 ## 실행
 
+Google Mobile Ads와 로컬 미디어 인코더가 네이티브 모듈이므로 Expo Go에서는 실행할 수 없습니다.
+
 ```bash
 npm install
-npm run start -- --host localhost --port 8081
+npm run ios
+# 또는
+npm run android
+
+# 개발 빌드가 설치된 뒤 Metro만 다시 실행할 때
+npm start
 ```
 
-`npm run start`는 `expo start --go`를 사용해서 Expo Go에서 열 수 있는 링크를 강제합니다. Expo Go에서는 손가락/기본 터치 fallback과 React Native 기반 stroke preview로 동작합니다.
+로컬 AI API까지 확인하려면 `.env.example`을 `.env.local`로 복사해 개발용 fal.ai, Upstash, AdMob 값을 채웁니다.
 
-Apple Pencil/S Pen 정밀 입력은 `modules/stylus-input` local Expo module을 사용하므로 Expo Go가 아니라 development build가 필요합니다. 정밀 펜 입력을 테스트할 때는 development build 앱에서 아래 명령을 사용합니다.
+## 기능 경계
+
+- 프로젝트, 프레임, 스트로크: SQLite/IndexedDB의 기기 로컬 저장
+- 생성된 AI 프레임: 앱 문서 디렉터리에 저장되는 고정 배경 + 그 위의 편집 가능한 벡터 스트로크
+- 영상: 네이티브 인코더로 MP4 또는 GIF를 480/720/1080 정사각 해상도에서 로컬 생성
+- 서버 저장: 보상 nonce, 익명 설치 ID, 광고 transaction ID, AI job 상태만 TTL과 함께 Upstash에 저장
+- AI 전송: 사용자가 선택한 인접 프레임 두 장만 fal.ai `fal-ai/rife`로 전송
+- 로그인, 프로젝트 동기화, 원격 미디어 보관, 공개 공유 링크: 제공하지 않음
+
+## AI 보상 흐름
+
+1. 앱이 일회성 보상 nonce를 만듭니다.
+2. Google UMP 동의를 수집한 뒤 AdMob 리워드 광고를 표시합니다.
+3. Google SSV 서명을 검증하고 보상을 `pending → granted`로 전환합니다.
+4. 한 AI 요청이 보상을 `reserved`로 예약합니다.
+5. fal.ai 결과가 성공한 때만 `consumed`로 확정합니다.
+6. 공급자 또는 네트워크 처리 실패 시 보상은 `granted`로 복구됩니다. 성공 결과 미리보기에서 사용자가 취소한 경우에는 환불하지 않습니다.
+
+## 주요 명령
 
 ```bash
-npm run start:dev-client
-npm run ios
-npm run android
+npm test
+npm run typecheck
+npx expo install --check
+
+# API route 전용 서버 번들
+npm run export:server
+
+# EAS Hosting preview / production
+npm run deploy:api:preview
+npm run deploy:api
+
+# TestFlight + Play 내부 테스트용 빌드/제출
+npm run build:beta
+npm run submit:beta
 ```
+
+배포 전 계정·환경 변수·AdMob SSV·스토어 설정은 [배포 가이드](docs/DEPLOYMENT.md)를 따릅니다. 현재 구현 상태와 남은 외부 작업은 [백로그](docs/BACKLOG.md)에 정리되어 있습니다.
 
 ## 네이티브 프로젝트 운영
 
-이 프로젝트의 `android/` 폴더는 `app.json`, Expo plugins, `modules/stylus-input` local Expo module을 기준으로 만든 native output입니다. native project 운영은 prebuild 재생성 기준으로 관리합니다.
-
-native config, Expo plugin, local module native 코드, Android package 설정을 바꾼 뒤에는 아래 순서로 동기화합니다.
+`ios/`와 `android/`는 커밋하는 non-CNG 구조입니다. app config, Expo plugin 또는 `modules/`의 네이티브 코드를 바꾼 뒤 아래 순서로 동기화하고 generated diff를 검토합니다.
 
 ```bash
-npx expo prebuild --clean --platform android
+npx expo prebuild --platform all --no-install
+npx pod-install
 npm run android
+npm run ios
 ```
 
-생성된 `android/` 변경사항은 커밋 전에 반드시 리뷰합니다. Expo Go는 기본 터치 fallback 확인용이고, Apple Pencil/S Pen 정밀 입력은 development build에서 확인합니다.
-
-현재처럼 `android/`를 보관하는 non-CNG 구조에서는 app config가 native output에 자동 동기화되지 않습니다. 이 프로젝트는 해당 운영 방식을 명시적으로 선택했기 때문에 `package.json`에서 Expo Doctor의 app config 동기화 경고를 끄고, 위 prebuild 절차와 native diff 리뷰를 동기화 기준으로 삼습니다.
-
-## 공유 환경 변수
-
-API route와 웹 플레이어 업로드에는 아래 값이 필요합니다.
-
-로컬 설정은 `.env.example`을 복사해서 시작합니다.
-
-```bash
-R2_ACCOUNT_ID=
-R2_BUCKET=
-R2_ACCESS_KEY_ID=
-R2_SECRET_ACCESS_KEY=
-R2_PUBLIC_BASE_URL=
-APP_PUBLIC_BASE_URL=
-EXPO_PUBLIC_APP_PUBLIC_BASE_URL=
-SHARE_ALLOWED_ORIGINS=
-SHARE_MAX_BODY_BYTES=2048
-SHARE_RATE_LIMIT_PROVIDER=upstash
-SHARE_RATE_LIMIT_MAX=30
-SHARE_RATE_LIMIT_WINDOW_SECONDS=60
-UPSTASH_REDIS_REST_URL=
-UPSTASH_REDIS_REST_TOKEN=
-```
-
-프로덕션에서는 `SHARE_RATE_LIMIT_PROVIDER`가 없으면 공유 생성 API가 503으로 실패합니다. 현재 durable provider는 `upstash`를 지원하며, 개발 환경에서는 로컬 테스트를 위해 provider 없이도 통과시킵니다.
-
-## 운영 체크리스트
-
-공유 기능을 배포하기 전에 아래 항목을 확인합니다.
-
-- R2 bucket public/custom domain이 `R2_PUBLIC_BASE_URL`과 같은 origin으로 열리는지 확인합니다.
-- `APP_PUBLIC_BASE_URL`과 `EXPO_PUBLIC_APP_PUBLIC_BASE_URL`은 사용자가 여는 앱 URL로 맞춥니다.
-- `SHARE_ALLOWED_ORIGINS`는 앱 origin만 허용합니다. 비워두면 `APP_PUBLIC_BASE_URL`의 origin을 사용합니다.
-- 프로덕션에서는 `SHARE_RATE_LIMIT_PROVIDER=upstash`, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`을 설정합니다.
-- 업로드 후 `/v/[shareId]`가 `/api/shares/[shareId]/manifest`를 통해 manifest를 읽고 첫 프레임을 표시하는지 확인합니다.
-
-성능 회귀를 확인할 때는 64~128 프레임 프로젝트, 긴 stroke가 있는 프레임 전환, 태블릿/휴대폰 가로 회전, FrameStrip/FrameGrid 스크롤을 같이 봅니다.
-
-## 검증
-
-```bash
-npm run typecheck
-npm test
-npx expo install --check
-npx expo export --platform web --output-dir .web-export-test
-```
+정밀 Apple Pencil/S Pen 입력은 `modules/stylus-input`, MP4/GIF 생성은 `modules/video-encoder` local Expo module이 담당합니다.

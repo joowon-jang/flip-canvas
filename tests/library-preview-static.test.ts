@@ -9,12 +9,9 @@ describe("library first frame preview", () => {
     const source = readFileSync(resolve("app/index.tsx"), "utf8");
     const types = readFileSync(resolve("src/types/flipbook.ts"), "utf8");
 
-    equal(source.includes("StrokePreview"), true);
+    equal(source.includes("FrameComposite"), true);
     equal(source.includes("previewFrame={project.previewFrame}"), true);
-    equal(source.includes("frame?.strokes ?? []"), true);
-    equal(source.includes('eraserRenderMode="paint"'), true);
-    equal(source.includes('renderMode="pressure-lite"'), true);
-    equal(source.includes("pointsPerPressureSegment={4}"), true);
+    equal(source.includes("frame ? <FrameComposite"), true);
     equal(types.includes("previewFrame?: FlipFrame"), true);
   });
 

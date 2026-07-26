@@ -9,8 +9,6 @@ export function summaryFromProject(project: FlipProject): ProjectSummary {
     previewFrame: project.frames[0],
     createdAt: project.createdAt,
     updatedAt: project.updatedAt,
-    shareId: project.shareId,
-    shareUrl: project.shareUrl,
   };
 }
 

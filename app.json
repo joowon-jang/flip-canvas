@@ -3,6 +3,7 @@
     "name": "Flip Canvas",
     "slug": "flip-canvas",
     "version": "0.1.0",
+    "icon": "./assets/images/icon.png",
     "orientation": "default",
     "scheme": "flipcanvas",
     "userInterfaceStyle": "light",
@@ -16,7 +17,11 @@
     },
     "android": {
       "package": "com.joowon.flipcanvas",
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#F3EBDD"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -25,7 +30,8 @@
     "plugins": [
       "expo-router",
       "expo-dev-client",
-      "expo-sqlite"
+      "expo-sqlite",
+      "react-native-google-mobile-ads"
     ],
     "experiments": {
       "typedRoutes": true,
