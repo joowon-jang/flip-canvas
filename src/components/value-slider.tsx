@@ -152,8 +152,8 @@ const styles = StyleSheet.create({
   },
   label: {
     color: theme.color.graphite,
-    fontSize: 12,
-    fontWeight: "700",
+    fontFamily: theme.font.displayBold,
+    fontSize: 13,
   },
   value: {
     color: theme.color.muted,
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     height: 8,
     justifyContent: "center",
     borderRadius: 4,
-    backgroundColor: theme.color.hairline,
+    backgroundColor: theme.color.progressTrack,
   },
   trackFill: {
     height: 8,

@@ -162,7 +162,7 @@ export function DrawingCanvas({
   );
 
   return (
-    <NotebookPaper fold={false} style={[styles.paper, { width: size, height: size }]}>
+    <NotebookPaper fold={false} tapeLeft="primary" style={[styles.paper, { width: size, height: size }]}>
       {frame.background ? <FrameBackgroundLayer assetPath={frame.background.assetPath} size={size} /> : null}
       <StrokePreview
         strokes={renderedFrameStrokes}

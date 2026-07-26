@@ -11,10 +11,12 @@ import { captureRef } from "react-native-view-shot";
 import { Button } from "../../../src/components/button";
 import { FpsInput, type FpsValue } from "../../../src/components/fps-input";
 import { FrameComposite } from "../../../src/components/frame-composite";
+import { MaskingTape } from "../../../src/components/notebook-paper";
 import { ProjectLoadState } from "../../../src/components/project-load-state";
 import { ScreenHeader } from "../../../src/components/screen-header";
 import { goBackOrReplace } from "../../../src/navigation/go-back";
 import { useProject, useProjectActions } from "../../../src/state/project-store";
+import { shadow } from "../../../src/shadow";
 import { resolveFrameAssetUri } from "../../../src/storage/frame-assets";
 import { theme } from "../../../src/theme";
 
@@ -273,6 +275,7 @@ export default function RenderScreen() {
         </View>
 
         <View style={[styles.progressCard, { width: contentWidth }]}>
+          <MaskingTape corner="left" tone="success" />
           <View
             accessibilityRole="progressbar"
             accessibilityValue={{ min: 0, max: 100, now: Math.round(progress * 100) }}
@@ -349,9 +352,10 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: 20,
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
+    ...shadow,
   },
   settingTitle: {
     color: theme.color.graphite,
@@ -374,9 +378,10 @@ const styles = StyleSheet.create({
     gap: 18,
     padding: 20,
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
+    ...shadow,
   },
   progressTrack: {
     height: 6,

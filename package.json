@@ -18,6 +18,7 @@
     "test": "tsc -p tsconfig.test.json && node .test-build/tests/run-tests.js"
   },
   "dependencies": {
+    "@expo-google-fonts/gaegu": "^0.4.1",
     "@fal-ai/client": "^1.10.1",
     "@shopify/flash-list": "2.0.2",
     "@shopify/react-native-skia": "2.2.12",

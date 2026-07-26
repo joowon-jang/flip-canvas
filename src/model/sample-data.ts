@@ -1,3 +1,4 @@
+import { theme } from "../theme";
 import type { FlipProject, Stroke } from "../types/flipbook";
 import { DEFAULT_FPS } from "./fps";
 
@@ -5,7 +6,7 @@ function sampleStroke(id: string, offset: number): Stroke {
   return {
     id,
     tool: "pen",
-    color: "#171717",
+    color: theme.color.graphite,
     baseWidth: 4,
     createdAt: 1,
     points: [

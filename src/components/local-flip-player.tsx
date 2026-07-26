@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { frameDurationMs } from "../model/fps";
-import { shadow, theme } from "../theme";
+import { shadow } from "../shadow";
+import { theme } from "../theme";
 import type { FlipFrame } from "../types/flipbook";
 import { FrameComposite } from "./frame-composite";
+import { MaskingTape } from "./notebook-paper";
 
 type LocalFlipPlayerProps = {
   frames: FlipFrame[];
@@ -44,6 +46,7 @@ export function LocalFlipPlayer({ frames, fps, size, autoPlay = true }: LocalFli
   return (
     <View style={[styles.player, { width: size, height: size }]}>
       <FrameComposite frame={frame} size={size} style={styles.paper} />
+      <MaskingTape corner="left" tone="primary" />
       <Text
         selectable={false}
         style={styles.counter}

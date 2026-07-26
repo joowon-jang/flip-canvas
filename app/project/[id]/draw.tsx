@@ -433,9 +433,9 @@ const styles = StyleSheet.create({
   },
   landscapeTitle: {
     color: theme.color.graphite,
+    fontFamily: theme.font.displayBold,
     fontSize: 26,
-    lineHeight: 36,
-    fontWeight: "300",
+    lineHeight: 34,
   },
   landscapeSubtitle: {
     color: theme.color.muted,
@@ -450,7 +450,7 @@ const styles = StyleSheet.create({
   framePanel: {
     alignSelf: "stretch",
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
   },
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
   },
   framePanelTitle: {
     color: theme.color.graphite,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
   },
   sheetCount: {
     color: theme.color.muted,
@@ -494,9 +494,9 @@ const styles = StyleSheet.create({
   },
   portraitTitle: {
     color: theme.color.graphite,
-    fontSize: 20,
-    lineHeight: 28,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
+    fontSize: 22,
+    lineHeight: 30,
   },
   portraitSubtitle: {
     color: theme.color.muted,

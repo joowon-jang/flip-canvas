@@ -9,6 +9,7 @@ import { ScreenHeader } from "../../../src/components/screen-header";
 import { addFrameToEnd, duplicateFrame, moveFrame, removeFrame } from "../../../src/model/frame-actions";
 import { goBackOrReplace } from "../../../src/navigation/go-back";
 import { useProject, useProjectActions } from "../../../src/state/project-store";
+import { shadow } from "../../../src/shadow";
 import { theme } from "../../../src/theme";
 import { createId, now } from "../../../src/utils/id";
 
@@ -141,21 +142,22 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.color.graphite,
-    fontSize: 24,
-    lineHeight: 32,
-    fontWeight: "300",
+    fontFamily: theme.font.displayBold,
+    fontSize: 28,
+    lineHeight: 36,
   },
   subtitle: {
     color: theme.color.muted,
-    fontSize: 12,
+    fontSize: 13,
   },
   card: {
     padding: 18,
     gap: 18,
     borderRadius: theme.radius.md,
-    borderWidth: 1,
+    borderWidth: theme.border.hairline,
     borderColor: theme.color.hairline,
     backgroundColor: theme.color.paper,
+    ...shadow,
   },
   actions: {
     flexDirection: "row",
